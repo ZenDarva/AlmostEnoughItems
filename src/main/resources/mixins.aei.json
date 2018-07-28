@@ -7,8 +7,8 @@
   "refmap": "mixins.aei.refmap.json",
   "mixins": [
     "MixinDoneLoading",
-    "MixinDrawGuiContainer"
-
+    "MixinDrawGuiContainer",
+    "MixinMinecraftResize"
   ],
   "client": [
 

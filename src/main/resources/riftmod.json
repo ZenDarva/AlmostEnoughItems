@@ -1,12 +1,13 @@
 {
   "id": "aie-core",
-  "name": "AlmostEnoughItems-Core",
+  "name": "AlmostEnoughItems",
   "authors": [
     "ZenDarva"
   ],
   "listeners": [
     "com.gmail.zendarva.aie.Core",
     "com.gmail.zendarva.aie.listeners.InitListener",
-    "com.gmail.zendarva.aie.listeners.DrawContainerListener"
+    "com.gmail.zendarva.aie.listeners.DrawContainerListener",
+    "com.gmail.zendarva.aie.listeners.ResizeListener"
   ]
 }
