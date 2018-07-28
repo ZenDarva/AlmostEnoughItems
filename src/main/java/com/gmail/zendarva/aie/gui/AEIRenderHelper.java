@@ -3,6 +3,7 @@ package com.gmail.zendarva.aie.gui;
 import com.gmail.zendarva.aie.util.ScaledResolution;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.ItemRenderer;
 
 import java.awt.*;
 
@@ -36,5 +37,9 @@ public class AEIRenderHelper {
         if (aeiGui !=  null){
          aeiGui.resize();
         }
+    }
+
+    public static ItemRenderer getItemRender(){
+        return Minecraft.getMinecraft().getRenderItem();
     }
 }

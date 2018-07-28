@@ -25,35 +25,9 @@ import org.lwjgl.opengl.GLXARBVertexBufferObject;
  * Created by James on 7/27/2018.
  */
 public class DrawContainerListener implements DrawContainer {
-    ResourceLocation location = new ResourceLocation("almostenoughitems", "menu_background");
-    private int itemOffset = 0;
-    private int nextOffset;
-
     @Override
     public void draw(int x, int y, float dunno, GuiContainer gui) {
         AEIRenderHelper.setMouseLoc(x,y);
-
         AEIRenderHelper.drawAEI(gui);
-
-//        GlStateManager.disableRescaleNormal();
-//        RenderHelper.disableStandardItemLighting();
-//        GlStateManager.disableLighting();
-//        GlStateManager.disableDepth();
-//        ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
-//        int startX = resolution.getScaledWidth() - (gui.guiLeft);
-//        int width = resolution.getScaledWidth();
-//
-//        GlStateManager.pushMatrix();
-//
-//        drawRect(startX, 0, width, resolution.getScaledHeight(), 0x90606060);
-//        drawItems(gui, startX, 0);
-//
-//        GlStateManager.popMatrix();
-
-
     }
-
-
-
-
 }
