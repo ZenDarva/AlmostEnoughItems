@@ -1,6 +1,8 @@
 package com.gmail.zendarva.aie.gui;
 
 import com.gmail.zendarva.aie.Core;
+import com.gmail.zendarva.aie.gui.widget.AEISlot;
+import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.util.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.*;
@@ -14,12 +16,32 @@ import java.util.ArrayList;
  */
 public class GuiItemList extends Drawable {
 
+    public static final int FOOTERSIZE = 50;
     private final GuiContainer overlayedGui;
     private static int itemOffset = 0;
     private static int nextOffset = 0;
     private static int page=0;
     private ArrayList<AEISlot> displaySlots;
+    protected ArrayList<Control> controls;
+    com.gmail.zendarva.aie.gui.widget.Button buttonLeft;
+    com.gmail.zendarva.aie.gui.widget.Button buttonRight;
 
+    public GuiItemList(GuiContainer overlayedGui) {
+        super(calculateRect(overlayedGui));
+        displaySlots = new ArrayList<>();
+        controls = new ArrayList<>();
+        this.overlayedGui = overlayedGui;
+//        calculateSlots();
+//        fillSlots();
+//        buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5,rect.height-32,8,20,"<");
+//        buttonLeft.onClick= this::btnLeftClicked;
+//        buttonRight = new com.gmail.zendarva.aie.gui.widget.Button(rect.x + rect.width-10,rect.height-32,8,20,">");
+//        buttonRight.onClick=this::btnRightClicked;
+//        controls.add(buttonLeft);
+//        controls.add(buttonRight);
+//        controls.addAll(displaySlots);
+        resize();
+    }
     private static Rectangle calculateRect(GuiContainer overlayedGui) {
         ScaledResolution res = AEIRenderHelper.getResolution();
         int startX = (res.getScaledWidth() - overlayedGui.guiLeft) + 10 / res.getScaleFactor();
@@ -27,20 +49,20 @@ public class GuiItemList extends Drawable {
         return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
 
-    public GuiItemList(GuiContainer overlayedGui) {
-        super(calculateRect(overlayedGui));
-        displaySlots = new ArrayList<>();
-        calculateSlots();
-        fillSlots();
-        this.overlayedGui = overlayedGui;
-
-    }
-
     protected void resize() {
         rect = calculateRect(overlayedGui);
-        fillSlots();
-        calculateSlots();
         itemOffset = 0;
+        page =0;
+        calculateSlots();
+        fillSlots();
+        buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5,rect.height-32,8,20,"<");
+        buttonLeft.onClick= this::btnLeftClicked;
+        buttonRight = new com.gmail.zendarva.aie.gui.widget.Button(rect.x + rect.width-10,rect.height-32,8,20,">");
+        buttonRight.onClick=this::btnRightClicked;
+        controls.clear();
+        controls.add(buttonLeft);
+        controls.add(buttonRight);
+        controls.addAll(displaySlots);
     }
 
     private void fillSlots(){
@@ -48,10 +70,11 @@ public class GuiItemList extends Drawable {
         for (int i = 0; i < displaySlots.size();i++)
         {
             if (firstSlot+i < Core.ingredientList.size()) {
-                displaySlots.get(i).setItemstack(Core.ingredientList.get(firstSlot + i));
+                displaySlots.get(i).setIngredient(Core.ingredientList.get(firstSlot + i));
             }
-            else
-                break;
+            else {
+                displaySlots.get(i).setIngredient(null);
+            }
         }
     }
 
@@ -70,7 +93,7 @@ public class GuiItemList extends Drawable {
                 xOffset = 4;
                 yOffset += 18;
             }
-            if (y + yOffset + 18 + 50 > res.getScaledHeight()) {
+            if (y + yOffset + 18 + FOOTERSIZE/res.getScaleFactor() > res.getScaledHeight()) {
                 break;
             }
         }
@@ -86,8 +109,10 @@ public class GuiItemList extends Drawable {
         drawRect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, 0x90606060);
         drawSlots();
 
+        updateButtons();
+        buttonLeft.draw();
+        buttonRight.draw();
         GlStateManager.popMatrix();
-
     }
 
     private void drawSlots() {
@@ -135,4 +160,33 @@ public class GuiItemList extends Drawable {
         GlStateManager.disableAlpha();
     }
 
+
+    private void updateButtons(){
+        if (page == 0)
+            buttonLeft.setEnabled(false);
+        else
+            buttonLeft.setEnabled(true);
+        if (displaySlots.size() + displaySlots.size()*page >= Core.ingredientList.size())
+            buttonRight.setEnabled(false);
+        else
+            buttonRight.setEnabled(true);
+    }
+
+
+    public boolean btnRightClicked(int button){
+        if (button == 0) {
+            page++;
+            fillSlots();
+            return true;
+        }
+        return false;
+    }
+    public boolean btnLeftClicked(int button){
+        if (button == 0) {
+            page--;
+            fillSlots();
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,6 +1,7 @@
 package com.gmail.zendarva.aie.gui;
 
 import com.gmail.zendarva.aie.api.IIngredient;
+import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.util.ScaledResolution;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -68,6 +69,14 @@ public class AEIRenderHelper {
             getOverlayedGui().drawHoveringText(tooltipData.text,tooltipData.x,tooltipData.y);
         }
         tooltipsToRender.clear();
+    }
+
+    public static boolean mouseClick(int x, int y, int button) {
+        for (Control control : aeiGui.controls) {
+            if (control.isHighlighted() && control.isEnabled())
+                return control.onClick.apply(button);
+        }
+        return false;
     }
 
     private static class TooltipData{

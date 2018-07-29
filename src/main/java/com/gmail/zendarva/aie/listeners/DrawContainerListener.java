@@ -5,6 +5,7 @@ import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.domain.AEIItemStack;
 import com.gmail.zendarva.aie.gui.AEIRenderHelper;
 import com.gmail.zendarva.aie.listenerdefinitions.DrawContainer;
+import com.gmail.zendarva.aie.listenerdefinitions.GuiCickListener;
 import com.gmail.zendarva.aie.util.ScaledResolution;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -24,10 +25,15 @@ import org.lwjgl.opengl.GLXARBVertexBufferObject;
 /**
  * Created by James on 7/27/2018.
  */
-public class DrawContainerListener implements DrawContainer {
+public class DrawContainerListener implements DrawContainer, GuiCickListener {
     @Override
     public void draw(int x, int y, float dunno, GuiContainer gui) {
         AEIRenderHelper.setMouseLoc(x,y);
         AEIRenderHelper.drawAEI(gui);
+    }
+
+    @Override
+    public boolean onClick(int x,int y, int button) {
+        return AEIRenderHelper.mouseClick(x,y, button);
     }
 }
