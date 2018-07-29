@@ -1,5 +1,5 @@
 group 'com.gmail.zendarva'
-version '1.0-SNAPSHOT'
+version '0.0.1'
 
 buildscript {
     repositories {
@@ -44,21 +44,3 @@ mixin {
     defaultObfuscationEnv notch
     add sourceSets.main, 'mixins.aei.refmap.json'
 }
-
-task apiJar(type: Jar) {
-    from(sourceSets.main.output){
-        include "api/**"
-    }
-    archiveName="${project.archivesBaseName}-${version}-api.jar"
-}
-
-//configurations {
-//    api
-//}
-
-//artifacts{
-//    api apiJar
-//    archives jar
-//}
-
-build.dependsOn(apiJar)

@@ -28,8 +28,6 @@ public class AEIItemStack implements IItemStack {
         item = stack.getItem();
         metadata= stack.getItemDamage();
         tag = stack.getTagCompound();
-
-        //System.out.println(LanguageMap.getInstance().translateKey(stack.getTranslationKey()));
     }
 
     @Override

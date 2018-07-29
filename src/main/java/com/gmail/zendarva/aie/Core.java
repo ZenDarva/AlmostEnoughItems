@@ -30,12 +30,6 @@ public class Core implements DoneLoading, PacketAdder {
         ingredientList = new ArrayList<>();
         findPlugins();
         buildItemList();
-
-        System.out.println("done");
-        //System.exit(0);
-
-
-
     }
 
     private void buildItemList() {
@@ -48,7 +42,6 @@ public class Core implements DoneLoading, PacketAdder {
     }
 
     private void processItem(Item item){
-        //ingredientList.add(new AEIItemStack(item.getDefaultInstance()));
             NonNullList<ItemStack> items = NonNullList.create();
             try {
                 item.getSubItems(item.getCreativeTab(), items);
@@ -60,14 +53,10 @@ public class Core implements DoneLoading, PacketAdder {
                     items.forEach(f->ingredientList.add(new AEIItemStack(f)));
                 }
             }
-
-
-
     }
 
     @Override
     public void registerHandshakingPackets(PacketRegistrationReceiver receiver) {
-
     }
 
     @Override
