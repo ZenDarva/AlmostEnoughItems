@@ -1,15 +1,13 @@
 package com.gmail.zendarva.aie.gui;
 
 import com.gmail.zendarva.aie.Core;
-import com.gmail.zendarva.aie.domain.AEIItemStack;
 import com.gmail.zendarva.aie.util.ScaledResolution;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemStack;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created by James on 7/28/2018.
@@ -17,24 +15,65 @@ import java.awt.*;
 public class GuiItemList extends Drawable {
 
     private final GuiContainer overlayedGui;
-    private static int itemOffset=0;
-    private static int nextOffset=0;
+    private static int itemOffset = 0;
+    private static int nextOffset = 0;
+    private static int page=0;
+    private ArrayList<AEISlot> displaySlots;
 
-    private static Rectangle calculateRect(GuiContainer overlayedGui){
+    private static Rectangle calculateRect(GuiContainer overlayedGui) {
         ScaledResolution res = AEIRenderHelper.getResolution();
-        int startX = (res.getScaledWidth() - overlayedGui.guiLeft) + 10/res.getScaleFactor();
+        int startX = (res.getScaledWidth() - overlayedGui.guiLeft) + 10 / res.getScaleFactor();
         int width = res.getScaledWidth() - startX;
-        return new Rectangle(startX,0,width,res.getScaledHeight());
+        return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
 
-    public GuiItemList(GuiContainer overlayedGui){
+    public GuiItemList(GuiContainer overlayedGui) {
         super(calculateRect(overlayedGui));
+        displaySlots = new ArrayList<>();
+        calculateSlots();
+        fillSlots();
         this.overlayedGui = overlayedGui;
+
     }
 
-    protected void resize(){
+    protected void resize() {
         rect = calculateRect(overlayedGui);
-        itemOffset=0;
+        fillSlots();
+        calculateSlots();
+        itemOffset = 0;
+    }
+
+    private void fillSlots(){
+        int firstSlot = page * displaySlots.size();
+        for (int i = 0; i < displaySlots.size();i++)
+        {
+            if (firstSlot+i < Core.ingredientList.size()) {
+                displaySlots.get(i).setItemstack(Core.ingredientList.get(firstSlot + i));
+            }
+            else
+                break;
+        }
+    }
+
+    private void calculateSlots() {
+        int x = rect.x;
+        int y = rect.y;
+        ScaledResolution res = AEIRenderHelper.getResolution();
+        displaySlots.clear();
+        int xOffset = 4;
+        int yOffset = 4;
+        while (true) {
+            AEISlot slot = new AEISlot(x + xOffset, y + yOffset);
+            xOffset += 18;
+            displaySlots.add(slot);
+            if (x + xOffset + 18 > res.getScaledWidth()) {
+                xOffset = 4;
+                yOffset += 18;
+            }
+            if (y + yOffset + 18 + 50 > res.getScaledHeight()) {
+                break;
+            }
+        }
     }
 
     @Override
@@ -43,47 +82,21 @@ public class GuiItemList extends Drawable {
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
-        ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
         GlStateManager.pushMatrix();
-        drawRect(rect.x, rect.y, rect.x+rect.width, rect.y+rect.height, 0x90606060);
-        drawItems(this.overlayedGui, rect.x, 0);
+        drawRect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, 0x90606060);
+        drawSlots();
 
         GlStateManager.popMatrix();
 
     }
 
-    private void drawItems(GuiContainer gui, int x, int y) {
+    private void drawSlots() {
         GlStateManager.pushMatrix();
         RenderHelper.enableStandardItemLighting();
-
-        ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
-        int xOffset = 4;
-        int yOffset = 4;
-        for (int i = itemOffset; i < Core.ingredientList.size(); i++) {
-            ItemStack stack = ((AEIItemStack) Core.ingredientList.get(i)).getItemStack();
-            drawItemStack(gui, stack, x + xOffset, y + yOffset, "");
-            xOffset += 18;
-            if (x + xOffset + 18 > resolution.getScaledWidth()) {
-                xOffset = 4;
-                yOffset += 18;
-            }
-            if (y + yOffset + 18 + 50 > resolution.getScaledHeight()) {
-                nextOffset = i + 1;
-                break;
-            }
+        for (AEISlot displaySlot : displaySlots) {
+            displaySlot.draw();
         }
         GlStateManager.popMatrix();
-
-
-    }
-
-    private void drawItemStack(GuiContainer gui, ItemStack p_drawItemStack_1_, int p_drawItemStack_2_, int p_drawItemStack_3_, String p_drawItemStack_4_) {
-        gui.zLevel = 200.0F;
-        gui.itemRender.zLevel = 200.0F;
-        gui.itemRender.renderItemAndEffectIntoGUI(p_drawItemStack_1_, p_drawItemStack_2_, p_drawItemStack_3_);
-        gui.itemRender.renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRenderer, p_drawItemStack_1_, p_drawItemStack_2_, p_drawItemStack_3_ - (gui.draggedStack.isEmpty()?0:8), p_drawItemStack_4_);
-        gui.zLevel = 0.0F;
-        gui.itemRender.zLevel = 0.0F;
     }
 
     public static void drawRect(int p_drawRect_0_, int p_drawRect_1_, int p_drawRect_2_, int p_drawRect_3_, int p_drawRect_4_) {

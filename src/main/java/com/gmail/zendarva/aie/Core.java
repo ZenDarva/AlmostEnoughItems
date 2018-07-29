@@ -11,9 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import org.apache.commons.lang3.ObjectUtils;
-import org.dimdev.rift.listener.BlockAdder;
-import org.dimdev.rift.listener.MinecraftStartListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +30,13 @@ public class Core implements DoneLoading {
 
         System.out.println("done");
         //System.exit(0);
+
+
+
     }
 
     private void buildItemList() {
         Item.REGISTRY.forEach(this::processItem);
-
     }
 
     private void findPlugins() {
