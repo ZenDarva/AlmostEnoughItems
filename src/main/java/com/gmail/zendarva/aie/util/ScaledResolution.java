@@ -17,7 +17,7 @@ public class ScaledResolution {
         this.scaledWidth = minecraftClient.mainWindow.getWidth();
         this.scaledHeight = minecraftClient.mainWindow.getHeight();
         this.scaleFactor = 1;
-        boolean flag = minecraftClient.isForceUnicodeFont();
+        boolean flag = minecraftClient.isUnicode();
         int i = minecraftClient.gameSettings.guiScale;
         if(i == 0) {
             i = 1000;

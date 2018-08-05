@@ -5,6 +5,7 @@ import com.gmail.zendarva.aie.domain.AEIItemStack;
 import com.gmail.zendarva.aie.gui.AEIRenderHelper;
 import com.gmail.zendarva.aie.network.CheatPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 
 import java.awt.*;
@@ -34,6 +35,7 @@ public class AEISlot extends Control {
     public void draw() {
         if (stack == null)
             return;
+        RenderHelper.enableGUIStandardItemLighting();
         stack.draw(rect.x,rect.y);
         if (isHighlighted())
             drawTooltip();
@@ -41,6 +43,7 @@ public class AEISlot extends Control {
 
     private void drawTooltip() {
         List<String> toolTip = stack.getTooltip();
+        toolTip.add(stack.getMod());
         Point mouse = AEIRenderHelper.getMouseLoc();
         AEIRenderHelper.addToolTip(toolTip,mouse.x,mouse.y);
     }

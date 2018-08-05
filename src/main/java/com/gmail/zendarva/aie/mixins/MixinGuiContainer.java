@@ -3,8 +3,11 @@ package com.gmail.zendarva.aie.mixins;
 import com.gmail.zendarva.aie.listenerdefinitions.DoneLoading;
 import com.gmail.zendarva.aie.listenerdefinitions.DrawContainer;
 import com.gmail.zendarva.aie.listenerdefinitions.GuiCickListener;
+import com.gmail.zendarva.aie.listenerdefinitions.GuiKeyDown;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IGuiEventListenerDeferred;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Slot;
 import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,7 +20,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Created by James on 7/27/2018.
  */
 @Mixin(GuiContainer.class)
-public class MixinDrawGuiContainer {
+public abstract class MixinGuiContainer implements IGuiEventListenerDeferred {
+    @Shadow private Slot clickedSlot;
+
     @Inject(method = "drawScreen", at = @At("RETURN"))
     private void onDrawScreen(int p_drawScreen_1_, int p_drawScreen_2_, float p_drawScreen_3_, CallbackInfo ci) {
         for (DrawContainer listener : RiftLoader.instance.getListeners(DrawContainer.class)) {
@@ -37,5 +42,18 @@ public class MixinDrawGuiContainer {
         if (handled)
             ci.cancel();
 
+    }
+
+    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+    private void onKeyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_, CallbackInfoReturnable<Boolean> ci) {
+        boolean handled = false;
+        for (GuiKeyDown listener : RiftLoader.instance.getListeners(GuiKeyDown.class)) {
+            if (listener.keyDown(p_keyPressed_1_,p_keyPressed_2_,p_keyPressed_3_))
+                handled = true;
+        }
+        if (handled) {
+            ci.setReturnValue(handled);
+            ci.cancel();
+        }
     }
 }

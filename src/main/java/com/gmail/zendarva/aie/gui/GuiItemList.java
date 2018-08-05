@@ -1,8 +1,11 @@
 package com.gmail.zendarva.aie.gui;
 
 import com.gmail.zendarva.aie.Core;
+import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
 import com.gmail.zendarva.aie.gui.widget.Control;
+import com.gmail.zendarva.aie.gui.widget.IFocusable;
+import com.gmail.zendarva.aie.gui.widget.TextBox;
 import com.gmail.zendarva.aie.util.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.*;
@@ -25,22 +28,17 @@ public class GuiItemList extends Drawable {
     protected ArrayList<Control> controls;
     com.gmail.zendarva.aie.gui.widget.Button buttonLeft;
     com.gmail.zendarva.aie.gui.widget.Button buttonRight;
+    TextBox searchBox;
+    private ArrayList<IIngredient> view;
 
     public GuiItemList(GuiContainer overlayedGui) {
         super(calculateRect(overlayedGui));
         displaySlots = new ArrayList<>();
         controls = new ArrayList<>();
         this.overlayedGui = overlayedGui;
-//        calculateSlots();
-//        fillSlots();
-//        buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5,rect.height-32,8,20,"<");
-//        buttonLeft.onClick= this::btnLeftClicked;
-//        buttonRight = new com.gmail.zendarva.aie.gui.widget.Button(rect.x + rect.width-10,rect.height-32,8,20,">");
-//        buttonRight.onClick=this::btnRightClicked;
-//        controls.add(buttonLeft);
-//        controls.add(buttonRight);
-//        controls.addAll(displaySlots);
+        view = new ArrayList<>();
         resize();
+
     }
     private static Rectangle calculateRect(GuiContainer overlayedGui) {
         ScaledResolution res = AEIRenderHelper.getResolution();
@@ -53,8 +51,6 @@ public class GuiItemList extends Drawable {
         rect = calculateRect(overlayedGui);
         itemOffset = 0;
         page =0;
-        calculateSlots();
-        fillSlots();
         buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5,rect.height-32,8,20,"<");
         buttonLeft.onClick= this::btnLeftClicked;
         buttonRight = new com.gmail.zendarva.aie.gui.widget.Button(rect.x + rect.width-10,rect.height-32,8,20,">");
@@ -62,15 +58,20 @@ public class GuiItemList extends Drawable {
         controls.clear();
         controls.add(buttonLeft);
         controls.add(buttonRight);
-        controls.addAll(displaySlots);
+
+        searchBox = new TextBox(rect.x+rect.width/4,rect.height-32,rect.width/2,20);
+        controls.add(searchBox);
+        calculateSlots();
+        updateView();
+        fillSlots();
     }
 
     private void fillSlots(){
         int firstSlot = page * displaySlots.size();
         for (int i = 0; i < displaySlots.size();i++)
         {
-            if (firstSlot+i < Core.ingredientList.size()) {
-                displaySlots.get(i).setIngredient(Core.ingredientList.get(firstSlot + i));
+            if (firstSlot+i < view.size()) {
+                displaySlots.get(i).setIngredient(view.get(firstSlot + i));
             }
             else {
                 displaySlots.get(i).setIngredient(null);
@@ -101,23 +102,20 @@ public class GuiItemList extends Drawable {
 
     @Override
     public void draw() {
-        GlStateManager.disableRescaleNormal();
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
         GlStateManager.pushMatrix();
         drawRect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, 0x90606060);
-        drawSlots();
-
         updateButtons();
-        buttonLeft.draw();
-        buttonRight.draw();
+        controls.forEach(Control::draw);
+        drawSlots();
         GlStateManager.popMatrix();
     }
 
     private void drawSlots() {
         GlStateManager.pushMatrix();
-        RenderHelper.enableStandardItemLighting();
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+
+        RenderHelper.enableGUIStandardItemLighting();
         for (AEISlot displaySlot : displaySlots) {
             displaySlot.draw();
         }
@@ -166,7 +164,7 @@ public class GuiItemList extends Drawable {
             buttonLeft.setEnabled(false);
         else
             buttonLeft.setEnabled(true);
-        if (displaySlots.size() + displaySlots.size()*page >= Core.ingredientList.size())
+        if (displaySlots.size() + displaySlots.size()*page >= view.size())
             buttonRight.setEnabled(false);
         else
             buttonRight.setEnabled(true);
@@ -188,5 +186,48 @@ public class GuiItemList extends Drawable {
             return true;
         }
         return false;
+    }
+
+    protected void updateView(){
+        String searchText = searchBox.getText();
+        String modText=null;
+        if (searchText.contains("@")){
+            int nextBreak = searchText.indexOf(' ',searchText.indexOf('@'));
+            if (nextBreak ==0 || nextBreak==-1)
+                nextBreak = searchText.length();
+            modText = searchText.substring(searchText.indexOf('@'),nextBreak);
+            searchText=searchText.replace(modText,"").trim();
+            modText=modText.replace("@","").toLowerCase();
+        }
+
+        view.clear();
+        if (searchText.equals("") || searchText==null){
+            for (IIngredient iIngredient : Core.ingredientList) {
+                if (modText!= null){
+                    if (iIngredient.getMod().contains(modText)){
+                        view.add(iIngredient);
+                    }
+                }
+                else{
+                    view.add(iIngredient);
+                }
+            }
+        }
+        else {
+           for (IIngredient iIngredient : Core.ingredientList) {
+                if (iIngredient.getName().toLowerCase().contains(searchText))
+                    if (modText!= null){
+                        if (iIngredient.getMod().contains(modText)){
+                            view.add(iIngredient);
+                        }
+                    }
+                    else{
+                        view.add(iIngredient);
+                    }
+            }
+        }
+        itemOffset=0;
+        page=0;
+        fillSlots();
     }
 }

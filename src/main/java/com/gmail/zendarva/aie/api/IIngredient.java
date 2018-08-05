@@ -12,4 +12,8 @@ public interface IIngredient {
     public void draw(int x, int y);
 
     public List<String> getTooltip();
+
+    public String getMod();
+
+    public String getName();
 }

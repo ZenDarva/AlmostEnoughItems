@@ -9,6 +9,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
@@ -63,4 +64,17 @@ public class AEIItemStack implements IItemStack {
 
         return toolTip;
     }
+
+    @Override
+    public String getMod() {
+        ResourceLocation location = Item.REGISTRY.getNameForObject(item);
+        return location.getNamespace();
+    }
+
+    @Override
+    public String getName() {
+        return item.getName().getString();
+    }
+
+
 }
