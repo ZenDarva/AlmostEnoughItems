@@ -33,7 +33,7 @@ configurations {
 }
 
 dependencies {
-    implementation 'org.dimdev:rift:1.0.2-33'
+    implementation 'org.dimdev:rift:1.0.2-33:dev'
     shade group: 'io.github.lukehutch', name: 'fast-classpath-scanner', version: '3.1.13'
 }
 
