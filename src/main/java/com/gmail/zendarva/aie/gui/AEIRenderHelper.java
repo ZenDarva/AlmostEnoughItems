@@ -3,7 +3,7 @@ package com.gmail.zendarva.aie.gui;
 import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.gui.widget.IFocusable;
-import com.gmail.zendarva.aie.util.ScaledResolution;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -33,8 +33,9 @@ public class AEIRenderHelper {
         return mouseLoc;
     }
 
-    public static ScaledResolution getResolution() {
-        return new ScaledResolution(Minecraft.getMinecraft());
+    public static MainWindow getResolution() {
+
+        return Minecraft.getMinecraft().mainWindow;
     }
 
     public static void drawAEI(GuiContainer overlayedGui) {
@@ -115,8 +116,6 @@ public class AEIRenderHelper {
                 }
             handled = true;
         }
-        if (handled == false)
-            System.out.println("Fuck");
         return handled;
     }
 

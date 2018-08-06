@@ -49,7 +49,10 @@ public class AEISlot extends Control {
     }
 
     private boolean onClick(int button) {
-        if (Minecraft.getMinecraft().player.isCreative()){
+        int level = 0;
+        if (Minecraft.getMinecraft().getIntegratedServer() != null)
+            level = Minecraft.getMinecraft().getIntegratedServer().getOpPermissionLevel();
+        if (level >1){
             if (stack instanceof AEIItemStack) {
                 ItemStack cheatyStack = ((AEIItemStack) stack).getItemStack();
                 if (button == 0)

@@ -4,11 +4,13 @@ import com.gmail.zendarva.aie.Core;
 import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
 import com.gmail.zendarva.aie.gui.widget.Control;
-import com.gmail.zendarva.aie.gui.widget.IFocusable;
 import com.gmail.zendarva.aie.gui.widget.TextBox;
-import com.gmail.zendarva.aie.util.ScaledResolution;
+import net.minecraft.client.MainWindow;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import java.awt.*;
@@ -19,13 +21,14 @@ import java.util.ArrayList;
  */
 public class GuiItemList extends Drawable {
 
-    public static final int FOOTERSIZE = 50;
-    private final GuiContainer overlayedGui;
+    public static final int FOOTERSIZE = 70;
+    private GuiContainer overlayedGui;
     private static int itemOffset = 0;
     private static int nextOffset = 0;
     private static int page=0;
     private ArrayList<AEISlot> displaySlots;
     protected ArrayList<Control> controls;
+    private boolean needsResize = false;
     com.gmail.zendarva.aie.gui.widget.Button buttonLeft;
     com.gmail.zendarva.aie.gui.widget.Button buttonRight;
     TextBox searchBox;
@@ -41,29 +44,42 @@ public class GuiItemList extends Drawable {
 
     }
     private static Rectangle calculateRect(GuiContainer overlayedGui) {
-        ScaledResolution res = AEIRenderHelper.getResolution();
-        int startX = (res.getScaledWidth() - overlayedGui.guiLeft) + 10 / res.getScaleFactor();
+        MainWindow res = AEIRenderHelper.getResolution();
+        int startX = (int) ((res.getScaledWidth() - overlayedGui.guiLeft) + 10 / res.getGuiScaleFactor());
         int width = res.getScaledWidth() - startX;
         return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
 
     protected void resize() {
+        MainWindow res = AEIRenderHelper.getResolution();
+        if (overlayedGui!= Minecraft.getMinecraft().currentScreen){
+            if (Minecraft.getMinecraft().currentScreen instanceof GuiContainer){
+                overlayedGui= (GuiContainer) Minecraft.getMinecraft().currentScreen;
+
+            }
+            else{
+                needsResize=true;
+                return;
+            }
+        }
         rect = calculateRect(overlayedGui);
         itemOffset = 0;
         page =0;
-        buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5,rect.height-32,8,20,"<");
+        buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),8,20,"<");
         buttonLeft.onClick= this::btnLeftClicked;
-        buttonRight = new com.gmail.zendarva.aie.gui.widget.Button(rect.x + rect.width-10,rect.height-32,8,20,">");
+        buttonRight = new com.gmail.zendarva.aie.gui.widget.Button(rect.x + rect.width-10, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),8,20,">");
         buttonRight.onClick=this::btnRightClicked;
         controls.clear();
         controls.add(buttonLeft);
         controls.add(buttonRight);
 
-        searchBox = new TextBox(rect.x+rect.width/4,rect.height-32,rect.width/2,20);
+
+        searchBox = new TextBox(rect.x+rect.width/4, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),rect.width/2,20);
         controls.add(searchBox);
         calculateSlots();
         updateView();
         fillSlots();
+        controls.addAll(displaySlots);
     }
 
     private void fillSlots(){
@@ -82,7 +98,7 @@ public class GuiItemList extends Drawable {
     private void calculateSlots() {
         int x = rect.x;
         int y = rect.y;
-        ScaledResolution res = AEIRenderHelper.getResolution();
+        MainWindow res = AEIRenderHelper.getResolution();
         displaySlots.clear();
         int xOffset = 4;
         int yOffset = 4;
@@ -94,7 +110,7 @@ public class GuiItemList extends Drawable {
                 xOffset = 4;
                 yOffset += 18;
             }
-            if (y + yOffset + 18 + FOOTERSIZE/res.getScaleFactor() > res.getScaledHeight()) {
+            if (y + yOffset + 18 + FOOTERSIZE/res.getGuiScaleFactor() > res.getScaledHeight()) {
                 break;
             }
         }
@@ -102,25 +118,16 @@ public class GuiItemList extends Drawable {
 
     @Override
     public void draw() {
+        if (needsResize == true)
+            resize();
         GlStateManager.pushMatrix();
         drawRect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, 0x90606060);
         updateButtons();
         controls.forEach(Control::draw);
-        drawSlots();
+        //drawSlots();
         GlStateManager.popMatrix();
     }
 
-    private void drawSlots() {
-        GlStateManager.pushMatrix();
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
-
-        RenderHelper.enableGUIStandardItemLighting();
-        for (AEISlot displaySlot : displaySlots) {
-            displaySlot.draw();
-        }
-        GlStateManager.popMatrix();
-    }
 
     public static void drawRect(int p_drawRect_0_, int p_drawRect_1_, int p_drawRect_2_, int p_drawRect_3_, int p_drawRect_4_) {
         int lvt_5_3_;
