@@ -6,6 +6,7 @@ import com.gmail.zendarva.aie.gui.AEIRenderHelper;
 import com.gmail.zendarva.aie.network.CheatPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import java.awt.*;
@@ -50,8 +51,10 @@ public class AEISlot extends Control {
 
     private boolean onClick(int button) {
         int level = 0;
-        if (Minecraft.getMinecraft().getIntegratedServer() != null)
-            level = Minecraft.getMinecraft().getIntegratedServer().getOpPermissionLevel();
+        if (Minecraft.getMinecraft().getIntegratedServer() != null) {
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
+        }
         if (level >1){
             if (stack instanceof AEIItemStack) {
                 ItemStack cheatyStack = ((AEIItemStack) stack).getItemStack();

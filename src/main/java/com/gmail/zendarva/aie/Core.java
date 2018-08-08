@@ -3,10 +3,13 @@ package com.gmail.zendarva.aie;
 import com.gmail.zendarva.aie.api.IAEIPlugin;
 import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.domain.AEIItemStack;
+import com.gmail.zendarva.aie.gui.AEIRenderHelper;
+import com.gmail.zendarva.aie.library.KeyBindManager;
 import com.gmail.zendarva.aie.listenerdefinitions.DoneLoading;
 import com.gmail.zendarva.aie.network.CheatPacket;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -15,6 +18,7 @@ import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.util.NonNullList;
 import org.dimdev.rift.listener.PacketAdder;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +28,21 @@ import java.util.List;
 public class Core implements DoneLoading, PacketAdder {
     private List<IAEIPlugin> plugins;
     public static List<IIngredient> ingredientList;
+    public static KeyBinding recipeKeybind;
+    public static KeyBinding hideKeybind;
     @Override
     public void onDoneLoading() {
         plugins = new ArrayList<>();
         ingredientList = new ArrayList<>();
         findPlugins();
         buildItemList();
+        setupKeybinds();
+    }
+
+    private void setupKeybinds() {
+        recipeKeybind = KeyBindManager.createKeybinding("key.aei.recipe", KeyEvent.VK_R,"key.aei.category", AEIRenderHelper::recipeKeybind);
+        recipeKeybind = KeyBindManager.createKeybinding("key.aei.hide", KeyEvent.VK_O ,"key.aei.category", AEIRenderHelper::hideKeybind);
+
     }
 
     private void buildItemList() {

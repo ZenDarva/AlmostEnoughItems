@@ -73,4 +73,6 @@ public abstract class Control extends Drawable {
         GlStateManager.disableBlend();
         GlStateManager.disableAlpha();
     }
+
+    public void tick(){}
 }

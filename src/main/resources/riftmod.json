@@ -8,6 +8,7 @@
     "com.gmail.zendarva.aie.Core",
     "com.gmail.zendarva.aie.listeners.InitListener",
     "com.gmail.zendarva.aie.listeners.DrawContainerListener",
-    "com.gmail.zendarva.aie.listeners.ResizeListener"
+    "com.gmail.zendarva.aie.listeners.ResizeListener",
+    "com.gmail.zendarva.aie.library.KeyBindManager"
   ]
 }

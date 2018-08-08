@@ -23,7 +23,6 @@ public class TextBox extends Control implements IFocusable {
     @Override
     public void draw() {
         textField.func_195608_a(0,0,0);
-        textField.updateCursorCounter();
     }
 
     @Override
@@ -58,5 +57,10 @@ public class TextBox extends Control implements IFocusable {
     protected void charTyped(char p_charTyped_1_, int p_charTyped_2_){
         textField.charTyped(p_charTyped_1_, p_charTyped_2_);
         AEIRenderHelper.updateSearch();
+    }
+
+    @Override
+    public void tick() {
+        textField.updateCursorCounter();
     }
 }

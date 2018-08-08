@@ -3,6 +3,7 @@ package com.gmail.zendarva.aie.gui;
 import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.gui.widget.IFocusable;
+import com.gmail.zendarva.aie.library.KeyBindManager;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -116,6 +117,9 @@ public class AEIRenderHelper {
                 }
             handled = true;
         }
+        if (!handled){
+            return KeyBindManager.processGuiKeybinds(typedChar);
+        }
         return handled;
     }
 
@@ -152,5 +156,19 @@ public class AEIRenderHelper {
 
     public static void updateSearch(){
         aeiGui.updateView();
+    }
+    public static void tick(){
+        if (aeiGui !=null && Minecraft.getMinecraft().currentScreen== overlayedGUI)
+            aeiGui.tick();
+    }
+
+    public static void recipeKeybind(){
+        System.out.println("Display a reicpe!");
+    }
+
+    public static void hideKeybind(){
+        if (Minecraft.getMinecraft().currentScreen==overlayedGUI){
+            aeiGui.visible=!aeiGui.visible;
+        }
     }
 }

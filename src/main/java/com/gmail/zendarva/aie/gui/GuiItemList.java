@@ -16,9 +16,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import java.awt.*;
 import java.util.ArrayList;
 
-/**
- * Created by James on 7/28/2018.
- */
 public class GuiItemList extends Drawable {
 
     public static final int FOOTERSIZE = 70;
@@ -33,6 +30,9 @@ public class GuiItemList extends Drawable {
     com.gmail.zendarva.aie.gui.widget.Button buttonRight;
     TextBox searchBox;
     private ArrayList<IIngredient> view;
+    private Control lastHovered;
+    protected boolean visible = true;
+
 
     public GuiItemList(GuiContainer overlayedGui) {
         super(calculateRect(overlayedGui));
@@ -118,54 +118,15 @@ public class GuiItemList extends Drawable {
 
     @Override
     public void draw() {
+        if (!visible)
+            return;
         if (needsResize == true)
             resize();
         GlStateManager.pushMatrix();
-        drawRect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, 0x90606060);
         updateButtons();
         controls.forEach(Control::draw);
-        //drawSlots();
         GlStateManager.popMatrix();
     }
-
-
-    public static void drawRect(int p_drawRect_0_, int p_drawRect_1_, int p_drawRect_2_, int p_drawRect_3_, int p_drawRect_4_) {
-        int lvt_5_3_;
-        if (p_drawRect_0_ < p_drawRect_2_) {
-            lvt_5_3_ = p_drawRect_0_;
-            p_drawRect_0_ = p_drawRect_2_;
-            p_drawRect_2_ = lvt_5_3_;
-        }
-
-        if (p_drawRect_1_ < p_drawRect_3_) {
-            lvt_5_3_ = p_drawRect_1_;
-            p_drawRect_1_ = p_drawRect_3_;
-            p_drawRect_3_ = lvt_5_3_;
-        }
-
-        float lvt_5_3_1 = (float) (p_drawRect_4_ >> 24 & 255) / 255.0F;
-        float lvt_6_1_ = (float) (p_drawRect_4_ >> 16 & 255) / 255.0F;
-        float lvt_7_1_ = (float) (p_drawRect_4_ >> 8 & 255) / 255.0F;
-        float lvt_8_1_ = (float) (p_drawRect_4_ & 255) / 255.0F;
-        Tessellator lvt_9_1_ = Tessellator.getInstance();
-        BufferBuilder lvt_10_1_ = lvt_9_1_.getBuffer();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_1);
-        lvt_10_1_.begin(7, DefaultVertexFormats.POSITION);
-        lvt_10_1_.pos((double) p_drawRect_0_, (double) p_drawRect_3_, 0.0D).endVertex();
-        lvt_10_1_.pos((double) p_drawRect_2_, (double) p_drawRect_3_, 0.0D).endVertex();
-        lvt_10_1_.pos((double) p_drawRect_2_, (double) p_drawRect_1_, 0.0D).endVertex();
-        lvt_10_1_.pos((double) p_drawRect_0_, (double) p_drawRect_1_, 0.0D).endVertex();
-        lvt_9_1_.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
-    }
-
-
     private void updateButtons(){
         if (page == 0)
             buttonLeft.setEnabled(false);
@@ -236,5 +197,12 @@ public class GuiItemList extends Drawable {
         itemOffset=0;
         page=0;
         fillSlots();
+    }
+
+    public void tick(){
+        controls.forEach(f->f.tick());
+    }
+    public void setLastHovered(Control ctrl){
+        lastHovered=ctrl;
     }
 }

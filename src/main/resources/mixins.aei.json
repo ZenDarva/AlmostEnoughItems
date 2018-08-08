@@ -9,7 +9,8 @@
     "MixinDoneLoading",
     "MixinGuiContainer",
     "MixinMinecraftResize",
-    "MixinKeyboardListener"
+    "MixinKeyboardListener",
+    "SettingsMixin"
   ],
   "client": [
 
