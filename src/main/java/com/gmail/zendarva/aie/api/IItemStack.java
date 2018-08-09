@@ -9,4 +9,6 @@ import net.minecraft.item.ItemStack;
 public interface IItemStack extends IIngredient {
 
     public ItemStack getItemStack();
+
+    public boolean matches(ItemStack stack);
 }

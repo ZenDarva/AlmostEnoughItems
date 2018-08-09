@@ -10,7 +10,8 @@
     "MixinGuiContainer",
     "MixinMinecraftResize",
     "MixinKeyboardListener",
-    "SettingsMixin"
+    "SettingsMixin",
+    "MixinRecipeManager"
   ],
   "client": [
 

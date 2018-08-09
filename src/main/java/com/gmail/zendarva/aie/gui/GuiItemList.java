@@ -205,4 +205,5 @@ public class GuiItemList extends Drawable {
     public void setLastHovered(Control ctrl){
         lastHovered=ctrl;
     }
+    public Control getLastHovered() {return lastHovered;}
 }

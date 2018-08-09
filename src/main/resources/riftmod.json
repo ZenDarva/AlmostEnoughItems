@@ -1,5 +1,5 @@
 {
-  "id": "aie-core",
+  "id": "almostenoughitems",
   "name": "AlmostEnoughItems",
   "authors": [
     "ZenDarva"
@@ -9,6 +9,7 @@
     "com.gmail.zendarva.aie.listeners.InitListener",
     "com.gmail.zendarva.aie.listeners.DrawContainerListener",
     "com.gmail.zendarva.aie.listeners.ResizeListener",
-    "com.gmail.zendarva.aie.library.KeyBindManager"
+    "com.gmail.zendarva.aie.library.KeyBindManager",
+    "com.gmail.zendarva.aie.plugin.VanillaPlugin"
   ]
 }

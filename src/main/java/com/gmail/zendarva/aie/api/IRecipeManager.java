@@ -1,6 +1,7 @@
 package com.gmail.zendarva.aie.api;
 
-import javax.naming.NameAlreadyBoundException;
+import net.minecraft.item.ItemStack;
+
 import java.util.List;
 
 /**
@@ -9,7 +10,8 @@ import java.util.List;
 public interface IRecipeManager {
 
     public void addRecipe(String id, IRecipe recipe);
-    public void addRecipe(String id, List<IRecipe> recipes);
-    public void addDisplayAdapter(String id, IDisplayAdapter adapter) throws NameAlreadyBoundException;
-    public void addCategory(String id, ICategory category);
+    public void addRecipe(String id, List<? extends IRecipe> recipes);
+    public void addDisplayAdapter(IDisplayCategory adapter);
+
+    public List<IRecipe> getRecipesFor(ItemStack stack);
 }

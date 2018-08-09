@@ -40,6 +40,13 @@ public class AEIItemStack implements IItemStack {
     }
 
     @Override
+    public boolean matches(ItemStack stack) {
+        return (this.item == stack.getItem() &&
+                this.tag.equals(stack.getTagCompound()) &&
+                this.metadata== stack.getItemDamage());
+    }
+
+    @Override
     public void draw(int x, int y) {
         GuiContainer gui = AEIRenderHelper.getOverlayedGui();
         gui.zLevel = 200.0F;

@@ -1,14 +1,19 @@
 package com.gmail.zendarva.aie.gui;
 
 import com.gmail.zendarva.aie.api.IIngredient;
+import com.gmail.zendarva.aie.api.IRecipe;
+import com.gmail.zendarva.aie.domain.AEIItemStack;
+import com.gmail.zendarva.aie.gui.widget.AEISlot;
 import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.gui.widget.IFocusable;
+import com.gmail.zendarva.aie.impl.AEIRecipeManager;
 import com.gmail.zendarva.aie.library.KeyBindManager;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.item.ItemStack;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -163,7 +168,22 @@ public class AEIRenderHelper {
     }
 
     public static void recipeKeybind(){
-        System.out.println("Display a reicpe!");
+        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer))
+            return;
+        Control control = aeiGui.getLastHovered();
+        if (control != null && control.isHighlighted() && control instanceof AEISlot){
+            AEISlot slot = (AEISlot) control;
+            System.out.println(slot.getIngredient().getName());
+            List<IRecipe> recipes = AEIRecipeManager.instance().getRecipesFor(((AEIItemStack)slot.getIngredient()).getItemStack());
+            RecipeGui gui = new RecipeGui(null,Minecraft.getMinecraft().currentScreen);
+            Minecraft.getMinecraft().displayGuiScreen(gui);
+            return;
+        }
+        if (overlayedGUI.hoveredSlot != null){
+            ItemStack stack = overlayedGUI.hoveredSlot.getStack();
+            System.out.println(stack.getItem().getTranslationKey());
+        }
+
     }
 
     public static void hideKeybind(){
