@@ -1,8 +1,6 @@
 package com.gmail.zendarva.aie;
 
 import com.gmail.zendarva.aie.api.IAEIPlugin;
-import com.gmail.zendarva.aie.api.IIngredient;
-import com.gmail.zendarva.aie.domain.AEIItemStack;
 import com.gmail.zendarva.aie.gui.AEIRenderHelper;
 import com.gmail.zendarva.aie.impl.AEIRecipeManager;
 import com.gmail.zendarva.aie.library.KeyBindManager;
@@ -28,13 +26,13 @@ import java.util.List;
  */
 public class Core implements DoneLoading, PacketAdder, RecipeLoadListener {
     private List<IAEIPlugin> plugins;
-    public static List<IIngredient> ingredientList;
+    public static List<ItemStack> stackList;
     public static KeyBinding recipeKeybind;
     public static KeyBinding hideKeybind;
     @Override
     public void onDoneLoading() {
         plugins = new ArrayList<>();
-        ingredientList = new ArrayList<>();
+        stackList = new ArrayList<>();
         findPlugins();
         buildItemList();
         setupKeybinds();
@@ -59,12 +57,12 @@ public class Core implements DoneLoading, PacketAdder, RecipeLoadListener {
             NonNullList<ItemStack> items = NonNullList.create();
             try {
                 item.getSubItems(item.getCreativeTab(), items);
-                items.forEach(f->ingredientList.add(new AEIItemStack(f)));
+                items.forEach(stackList::add);
             }
             catch(NullPointerException e) {
                 if (item == Items.ENCHANTED_BOOK){
                     item.getSubItems(ItemGroup.TOOLS, items);
-                    items.forEach(f->ingredientList.add(new AEIItemStack(f)));
+                    items.forEach(stackList::add);
                 }
             }
     }

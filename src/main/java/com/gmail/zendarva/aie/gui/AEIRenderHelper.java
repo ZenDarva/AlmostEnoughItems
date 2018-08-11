@@ -173,7 +173,7 @@ public class AEIRenderHelper {
         Control control = aeiGui.getLastHovered();
         if (control != null && control.isHighlighted() && control instanceof AEISlot){
             AEISlot slot = (AEISlot) control;
-            System.out.println(slot.getIngredient().getName());
+            System.out.println(slot.getStack().);
             List<IRecipe> recipes = AEIRecipeManager.instance().getRecipesFor(((AEIItemStack)slot.getIngredient()).getItemStack());
             RecipeGui gui = new RecipeGui(null,Minecraft.getMinecraft().currentScreen);
             Minecraft.getMinecraft().displayGuiScreen(gui);

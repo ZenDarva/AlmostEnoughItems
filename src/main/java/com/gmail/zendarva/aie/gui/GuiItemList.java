@@ -8,10 +8,7 @@ import com.gmail.zendarva.aie.gui.widget.TextBox;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -170,7 +167,7 @@ public class GuiItemList extends Drawable {
 
         view.clear();
         if (searchText.equals("") || searchText==null){
-            for (IIngredient iIngredient : Core.ingredientList) {
+            for (IIngredient iIngredient : Core.stackList) {
                 if (modText!= null){
                     if (iIngredient.getMod().contains(modText)){
                         view.add(iIngredient);
@@ -182,7 +179,7 @@ public class GuiItemList extends Drawable {
             }
         }
         else {
-           for (IIngredient iIngredient : Core.ingredientList) {
+           for (IIngredient iIngredient : Core.stackList) {
                 if (iIngredient.getName().toLowerCase().contains(searchText))
                     if (modText!= null){
                         if (iIngredient.getMod().contains(modText)){
