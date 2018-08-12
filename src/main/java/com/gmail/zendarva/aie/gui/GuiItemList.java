@@ -9,6 +9,9 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ public class GuiItemList extends Drawable {
     com.gmail.zendarva.aie.gui.widget.Button buttonLeft;
     com.gmail.zendarva.aie.gui.widget.Button buttonRight;
     TextBox searchBox;
-    private ArrayList<IIngredient> view;
+    private ArrayList<ItemStack> view;
     private Control lastHovered;
     protected boolean visible = true;
 
@@ -84,10 +87,10 @@ public class GuiItemList extends Drawable {
         for (int i = 0; i < displaySlots.size();i++)
         {
             if (firstSlot+i < view.size()) {
-                displaySlots.get(i).setIngredient(view.get(firstSlot + i));
+                displaySlots.get(i).setStack(view.get(firstSlot + i));
             }
             else {
-                displaySlots.get(i).setIngredient(null);
+                displaySlots.get(i).setStack(null);
             }
         }
     }
@@ -101,6 +104,7 @@ public class GuiItemList extends Drawable {
         int yOffset = 4;
         while (true) {
             AEISlot slot = new AEISlot(x + xOffset, y + yOffset);
+            slot.setCheatable(true);
             xOffset += 18;
             displaySlots.add(slot);
             if (x + xOffset + 18 > res.getScaledWidth()) {
@@ -167,27 +171,27 @@ public class GuiItemList extends Drawable {
 
         view.clear();
         if (searchText.equals("") || searchText==null){
-            for (IIngredient iIngredient : Core.stackList) {
+            for (ItemStack stack : Core.stackList) {
                 if (modText!= null){
-                    if (iIngredient.getMod().contains(modText)){
-                        view.add(iIngredient);
+                    if (getMod(stack).contains(modText)){
+                        view.add(stack);
                     }
                 }
                 else{
-                    view.add(iIngredient);
+                    view.add(stack);
                 }
             }
         }
         else {
-           for (IIngredient iIngredient : Core.stackList) {
-                if (iIngredient.getName().toLowerCase().contains(searchText))
+           for (ItemStack stack : Core.stackList) {
+                if (stack.getItem().getName().getString().toLowerCase().contains(searchText))
                     if (modText!= null){
-                        if (iIngredient.getMod().contains(modText)){
-                            view.add(iIngredient);
+                        if (getMod(stack).contains(modText)){
+                            view.add(stack);
                         }
                     }
                     else{
-                        view.add(iIngredient);
+                        view.add(stack);
                     }
             }
         }
@@ -203,4 +207,12 @@ public class GuiItemList extends Drawable {
         lastHovered=ctrl;
     }
     public Control getLastHovered() {return lastHovered;}
+
+    private String getMod(ItemStack stack) {
+        if (stack != null) {
+            ResourceLocation location = Item.REGISTRY.getNameForObject(stack.getItem());
+            return location.getNamespace();
+        }
+        return "";
+    }
 }

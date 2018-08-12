@@ -4,6 +4,7 @@ import com.gmail.zendarva.aie.gui.AEIRenderHelper;
 import net.minecraft.client.gui.GuiTextField;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by James on 8/3/2018.
@@ -47,6 +48,14 @@ public class TextBox extends Control implements IFocusable {
         if (handled){
             AEIRenderHelper.updateSearch();
         }
+        if (second==28){
+            if (AEIRenderHelper.focusedControl == this){
+                AEIRenderHelper.focusedControl= null;
+                this.setFocused(false);
+            }
+            handled = true;
+        }
+
         return handled;
     }
 

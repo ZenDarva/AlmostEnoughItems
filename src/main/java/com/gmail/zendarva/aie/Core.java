@@ -29,6 +29,7 @@ public class Core implements DoneLoading, PacketAdder, RecipeLoadListener {
     public static List<ItemStack> stackList;
     public static KeyBinding recipeKeybind;
     public static KeyBinding hideKeybind;
+    public static KeyBinding useKeybind;
     @Override
     public void onDoneLoading() {
         plugins = new ArrayList<>();
@@ -41,7 +42,7 @@ public class Core implements DoneLoading, PacketAdder, RecipeLoadListener {
     private void setupKeybinds() {
         recipeKeybind = KeyBindManager.createKeybinding("key.aei.recipe", KeyEvent.VK_R,"key.aei.category", AEIRenderHelper::recipeKeybind);
         hideKeybind = KeyBindManager.createKeybinding("key.aei.hide", KeyEvent.VK_O ,"key.aei.category", AEIRenderHelper::hideKeybind);
-
+        useKeybind = KeyBindManager.createKeybinding("key.aei.use", KeyEvent.VK_U,"key.aei.category", AEIRenderHelper::useKeybind);
     }
 
     private void buildItemList() {
@@ -88,7 +89,6 @@ public class Core implements DoneLoading, PacketAdder, RecipeLoadListener {
 
     @Override
     public void recipesLoaded(net.minecraft.item.crafting.RecipeManager recipeManager) {
-        AEIRecipeManager.instance().recipeManager = recipeManager;
-        RiftLoader.instance.getListeners(IAEIPlugin.class).forEach(IAEIPlugin::register);
+        AEIRecipeManager.instance().RecipesLoaded(recipeManager);
     }
 }

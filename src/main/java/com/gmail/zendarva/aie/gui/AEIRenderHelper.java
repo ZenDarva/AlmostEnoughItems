@@ -2,7 +2,6 @@ package com.gmail.zendarva.aie.gui;
 
 import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.api.IRecipe;
-import com.gmail.zendarva.aie.domain.AEIItemStack;
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
 import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.gui.widget.IFocusable;
@@ -18,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class AEIRenderHelper {
     static Point mouseLoc;
-    static GuiItemList aeiGui;
+    static public GuiItemList aeiGui;
     static GuiContainer overlayedGUI;
     static List<TooltipData> tooltipsToRender = new ArrayList<>();
 
@@ -33,7 +33,7 @@ public class AEIRenderHelper {
         mouseLoc = new Point(x, y);
     }
 
-    static IFocusable focusedControl;
+    static public IFocusable focusedControl;
 
     public static Point getMouseLoc() {
         return mouseLoc;
@@ -56,6 +56,9 @@ public class AEIRenderHelper {
     public static void resize() {
         if (aeiGui != null) {
             aeiGui.resize();
+        }
+        if (overlayedGUI instanceof RecipeGui){
+            overlayedGUI.onResize(Minecraft.getMinecraft(), 0,0);
         }
     }
 
@@ -105,6 +108,13 @@ public class AEIRenderHelper {
             focusedControl.setFocused(false);
             focusedControl = null;
         }
+        if (overlayedGUI instanceof RecipeGui){
+            List<Control> controls = ((RecipeGui)overlayedGUI).controls;
+            Optional<Control> ctrl= controls.stream().filter(Control::isHighlighted).filter(Control::isEnabled).findFirst();
+            if (ctrl.isPresent()){
+                return ctrl.get().onClick.apply(button);
+            }
+        }
         return false;
     }
 
@@ -132,7 +142,8 @@ public class AEIRenderHelper {
         if (focusedControl != null && focusedControl instanceof Control) {
             Control control = (Control) focusedControl;
             if (control.charPressed != null) {
-                if (num == 0)
+                int numChars = Character.charCount(keyCode);
+                if (num == numChars)
                     control.charPressed.accept((char) keyCode, unknown);
                 else {
                     char[] chars = Character.toChars(keyCode);
@@ -171,17 +182,29 @@ public class AEIRenderHelper {
         if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer))
             return;
         Control control = aeiGui.getLastHovered();
-        if (control != null && control.isHighlighted() && control instanceof AEISlot){
+        if (control != null && control.isHighlighted() && control instanceof AEISlot) {
             AEISlot slot = (AEISlot) control;
-            System.out.println(slot.getStack().);
-            List<IRecipe> recipes = AEIRecipeManager.instance().getRecipesFor(((AEIItemStack)slot.getIngredient()).getItemStack());
-            RecipeGui gui = new RecipeGui(null,Minecraft.getMinecraft().currentScreen);
-            Minecraft.getMinecraft().displayGuiScreen(gui);
+            AEIRecipeManager.instance().displayRecipesFor(slot.getStack());
             return;
         }
         if (overlayedGUI.hoveredSlot != null){
             ItemStack stack = overlayedGUI.hoveredSlot.getStack();
-            System.out.println(stack.getItem().getTranslationKey());
+            AEIRecipeManager.instance().displayRecipesFor(stack);
+        }
+
+    }
+    public static void useKeybind(){
+        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer))
+            return;
+        Control control = aeiGui.getLastHovered();
+        if (control != null && control.isHighlighted() && control instanceof AEISlot) {
+            AEISlot slot = (AEISlot) control;
+            AEIRecipeManager.instance().displayUsesFor(slot.getStack());
+            return;
+        }
+        if (overlayedGUI.hoveredSlot != null){
+            ItemStack stack = overlayedGUI.hoveredSlot.getStack();
+            AEIRecipeManager.instance().displayUsesFor(stack);
         }
 
     }

@@ -12,6 +12,7 @@
     "MixinKeyboardListener",
     "SettingsMixin",
     "MixinRecipeManager"
+
   ],
   "client": [
 
