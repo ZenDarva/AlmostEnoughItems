@@ -65,7 +65,6 @@ public class RecipeGui extends GuiContainer {
 
     @Override
     public void updateScreen() {
-        IRecipe recipe = recipes.get(categories.get(categoryPointer)).get(recipePointer);
         super.updateScreen();
         slots.forEach(AEISlot::tick);
     }

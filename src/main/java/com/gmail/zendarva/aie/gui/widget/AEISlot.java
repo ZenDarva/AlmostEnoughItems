@@ -80,7 +80,8 @@ public class AEISlot extends Control {
 
     public void setStack(ItemStack stack ){
         itemList.clear();
-        itemList.add(stack);
+        if (stack != null)
+            itemList.add(stack);
         itemListPointer =0;
     }
 

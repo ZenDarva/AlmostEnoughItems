@@ -20,8 +20,6 @@ public class GuiItemList extends Drawable {
 
     public static final int FOOTERSIZE = 70;
     private GuiContainer overlayedGui;
-    private static int itemOffset = 0;
-    private static int nextOffset = 0;
     private static int page=0;
     private ArrayList<AEISlot> displaySlots;
     protected ArrayList<Control> controls;
@@ -63,7 +61,6 @@ public class GuiItemList extends Drawable {
             }
         }
         rect = calculateRect(overlayedGui);
-        itemOffset = 0;
         page =0;
         buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),8,20,"<");
         buttonLeft.onClick= this::btnLeftClicked;
@@ -90,7 +87,7 @@ public class GuiItemList extends Drawable {
                 displaySlots.get(i).setStack(view.get(firstSlot + i));
             }
             else {
-                displaySlots.get(i).setStack(null);
+                displaySlots.get(i).setStack(ItemStack.EMPTY);
             }
         }
     }
@@ -195,7 +192,6 @@ public class GuiItemList extends Drawable {
                     }
             }
         }
-        itemOffset=0;
         page=0;
         fillSlots();
     }
@@ -209,7 +205,7 @@ public class GuiItemList extends Drawable {
     public Control getLastHovered() {return lastHovered;}
 
     private String getMod(ItemStack stack) {
-        if (stack != null) {
+        if (stack != null && !stack.isEmpty()) {
             ResourceLocation location = Item.REGISTRY.getNameForObject(stack.getItem());
             return location.getNamespace();
         }
