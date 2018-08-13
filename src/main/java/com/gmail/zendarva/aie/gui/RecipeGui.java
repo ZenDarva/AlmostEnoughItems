@@ -67,6 +67,7 @@ public class RecipeGui extends GuiContainer {
     public void updateScreen() {
         super.updateScreen();
         slots.forEach(AEISlot::tick);
+        controls.forEach(Control::tick);
     }
 
 
@@ -114,6 +115,11 @@ public class RecipeGui extends GuiContainer {
         for (int i = 0; i < itemPointer.length; i++) {
             itemPointer[i] = 0;
         }
+
+        List<Control> newControls = new LinkedList<>();
+        categories.get(categoryPointer).addWidget(newControls);
+        newControls.forEach(f->f.move(guiLeft,guiTop));
+        controls.addAll(newControls);
     }
 
     @Override
@@ -137,14 +143,17 @@ public class RecipeGui extends GuiContainer {
 
     @Override
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (!super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)){
 
 
-        if (p_keyPressed_1_ == 259 && prevScreen !=null){
+
+        if (p_keyPressed_1_ == 259 && prevScreen !=null && AEIRenderHelper.focusedControl ==null){
             Minecraft.getMinecraft().displayGuiScreen(prevScreen);
             return true;
-        }}
-        return false;
+        }
+
+
+
+        return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
 
     }
 

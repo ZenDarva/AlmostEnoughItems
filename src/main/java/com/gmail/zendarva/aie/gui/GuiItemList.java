@@ -1,7 +1,6 @@
 package com.gmail.zendarva.aie.gui;
 
 import com.gmail.zendarva.aie.Core;
-import com.gmail.zendarva.aie.api.IIngredient;
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
 import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.gui.widget.TextBox;

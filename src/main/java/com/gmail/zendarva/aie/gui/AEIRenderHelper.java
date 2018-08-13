@@ -1,7 +1,5 @@
 package com.gmail.zendarva.aie.gui;
 
-import com.gmail.zendarva.aie.api.IIngredient;
-import com.gmail.zendarva.aie.api.IRecipe;
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
 import com.gmail.zendarva.aie.gui.widget.Control;
 import com.gmail.zendarva.aie.gui.widget.IFocusable;
@@ -74,10 +72,6 @@ public class AEIRenderHelper {
         return overlayedGUI;
     }
 
-    public static List<String> getTooltip(IIngredient ingredient) {
-        return null;
-    }
-
     public static void addToolTip(List<String> text, int x, int y) {
         tooltipsToRender.add(new TooltipData(text, x, y));
     }
@@ -93,20 +87,22 @@ public class AEIRenderHelper {
     }
 
     public static boolean mouseClick(int x, int y, int button) {
-        for (Control control : aeiGui.controls) {
-            if (control.isHighlighted() && control.isEnabled() && control.onClick != null) {
-                if (focusedControl != null)
-                    focusedControl.setFocused(false);
-                if (control instanceof IFocusable) {
-                    focusedControl = (IFocusable) control;
-                    ((IFocusable) control).setFocused(true);
+        if (aeiGui.visible) {
+            for (Control control : aeiGui.controls) {
+                if (control.isHighlighted() && control.isEnabled() && control.onClick != null) {
+                    if (focusedControl != null)
+                        focusedControl.setFocused(false);
+                    if (control instanceof IFocusable) {
+                        focusedControl = (IFocusable) control;
+                        ((IFocusable) control).setFocused(true);
+                    }
+                    return control.onClick.apply(button);
                 }
-                return control.onClick.apply(button);
             }
-        }
-        if (focusedControl != null) {
-            focusedControl.setFocused(false);
-            focusedControl = null;
+            if (focusedControl != null) {
+                focusedControl.setFocused(false);
+                focusedControl = null;
+            }
         }
         if (overlayedGUI instanceof RecipeGui){
             List<Control> controls = ((RecipeGui)overlayedGUI).controls;

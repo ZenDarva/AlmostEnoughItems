@@ -34,10 +34,8 @@ public class AEISlot extends Control {
     public boolean isDrawBackground() {
         return drawBackground;
     }
+    private String extraTooltip;
 
-    public void move(int x, int y){
-        rect.move(x+rect.x,rect.y+y);//Why the fuck?
-    }
 
     @Override
     public void tick() {
@@ -57,6 +55,10 @@ public class AEISlot extends Control {
         itemList=newItemList;
         itemListPointer=0;
         displayCounter=0;
+    }
+
+    public void setExtraTooltip(String toolTip){
+        extraTooltip=toolTip;
     }
 
     public void setDrawBackground(boolean drawBackground) {
@@ -157,6 +159,10 @@ public class AEISlot extends Control {
             toolTip.add(unlocalizedTip.createCopy().getFormattedText());
         }
 
+        if (extraTooltip !=null){
+            toolTip.add(extraTooltip);
+        }
+
         return toolTip;
     }
 
@@ -168,16 +174,5 @@ public class AEISlot extends Control {
         this.cheatable = cheatable;
     }
 
-    private void drawTexturedModalRect(int p_drawTexturedModalRect_1_, int p_drawTexturedModalRect_2_, int p_drawTexturedModalRect_3_, int p_drawTexturedModalRect_4_, int p_drawTexturedModalRect_5_, int p_drawTexturedModalRect_6_) {
-        float lvt_7_1_ = 0.00390625F;
-        float lvt_8_1_ = 0.00390625F;
-        Tessellator lvt_9_1_ = Tessellator.getInstance();
-        BufferBuilder lvt_10_1_ = lvt_9_1_.getBuffer();
-        lvt_10_1_.begin(7, DefaultVertexFormats.POSITION_TEX);
-        lvt_10_1_.pos((double)(p_drawTexturedModalRect_1_ + 0), (double)(p_drawTexturedModalRect_2_ + p_drawTexturedModalRect_6_), (double)200).tex((double)((float)(p_drawTexturedModalRect_3_ + 0) * 0.00390625F), (double)((float)(p_drawTexturedModalRect_4_ + p_drawTexturedModalRect_6_) * 0.00390625F)).endVertex();
-        lvt_10_1_.pos((double)(p_drawTexturedModalRect_1_ + p_drawTexturedModalRect_5_), (double)(p_drawTexturedModalRect_2_ + p_drawTexturedModalRect_6_), (double)200).tex((double)((float)(p_drawTexturedModalRect_3_ + p_drawTexturedModalRect_5_) * 0.00390625F), (double)((float)(p_drawTexturedModalRect_4_ + p_drawTexturedModalRect_6_) * 0.00390625F)).endVertex();
-        lvt_10_1_.pos((double)(p_drawTexturedModalRect_1_ + p_drawTexturedModalRect_5_), (double)(p_drawTexturedModalRect_2_ + 0), (double)200).tex((double)((float)(p_drawTexturedModalRect_3_ + p_drawTexturedModalRect_5_) * 0.00390625F), (double)((float)(p_drawTexturedModalRect_4_ + 0) * 0.00390625F)).endVertex();
-        lvt_10_1_.pos((double)(p_drawTexturedModalRect_1_ + 0), (double)(p_drawTexturedModalRect_2_ + 0), (double)200).tex((double)((float)(p_drawTexturedModalRect_3_ + 0) * 0.00390625F), (double)((float)(p_drawTexturedModalRect_4_ + 0) * 0.00390625F)).endVertex();
-        lvt_9_1_.draw();
-    }
+
 }

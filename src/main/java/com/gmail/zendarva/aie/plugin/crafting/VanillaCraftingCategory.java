@@ -2,6 +2,7 @@ package com.gmail.zendarva.aie.plugin.crafting;
 
 import com.gmail.zendarva.aie.api.IDisplayCategory;
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
+import com.gmail.zendarva.aie.gui.widget.Control;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -63,6 +64,16 @@ public class VanillaCraftingCategory implements IDisplayCategory<VanillaCrafting
     @Override
     public boolean canDisplay(VanillaCraftingRecipe recipe) {
         return false;
+    }
+
+    @Override
+    public void drawExtras() {
+
+    }
+
+    @Override
+    public void addWidget(List<Control> controls) {
+
     }
 
     private int getSlotWithSize( int num){

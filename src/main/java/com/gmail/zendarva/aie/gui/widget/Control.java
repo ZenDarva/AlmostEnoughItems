@@ -38,6 +38,10 @@ public abstract class Control extends Drawable {
         this.enabled = enabled;
     }
 
+    public void move(int x, int y){
+        rect.move(x+rect.x,rect.y+y);//Why the fuck?
+    }
+
     protected static void drawRect(int p_drawRect_0_, int p_drawRect_1_, int p_drawRect_2_, int p_drawRect_3_, int p_drawRect_4_) {
         int lvt_5_3_;
         if (p_drawRect_0_ < p_drawRect_2_) {
@@ -72,6 +76,19 @@ public abstract class Control extends Drawable {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         GlStateManager.disableAlpha();
+    }
+
+    protected void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {
+        float lvt_7_1_ = 0.00390625F;
+        float lvt_8_1_ = 0.00390625F;
+        Tessellator lvt_9_1_ = Tessellator.getInstance();
+        BufferBuilder lvt_10_1_ = lvt_9_1_.getBuffer();
+        lvt_10_1_.begin(7, DefaultVertexFormats.POSITION_TEX);
+        lvt_10_1_.pos((double)(x + 0), (double)(y + height), (double)200).tex((double)((float)(u + 0) * 0.00390625F), (double)((float)(v + height) * 0.00390625F)).endVertex();
+        lvt_10_1_.pos((double)(x + width), (double)(y + height), (double)200).tex((double)((float)(u + width) * 0.00390625F), (double)((float)(v + height) * 0.00390625F)).endVertex();
+        lvt_10_1_.pos((double)(x + width), (double)(y + 0), (double)200).tex((double)((float)(u + width) * 0.00390625F), (double)((float)(v + 0) * 0.00390625F)).endVertex();
+        lvt_10_1_.pos((double)(x + 0), (double)(y + 0), (double)200).tex((double)((float)(u + 0) * 0.00390625F), (double)((float)(v + 0) * 0.00390625F)).endVertex();
+        lvt_9_1_.draw();
     }
 
     public void tick(){}

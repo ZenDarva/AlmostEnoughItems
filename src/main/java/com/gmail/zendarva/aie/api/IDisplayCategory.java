@@ -1,6 +1,7 @@
 package com.gmail.zendarva.aie.api;
 
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
+import com.gmail.zendarva.aie.gui.widget.Control;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -18,4 +19,8 @@ public interface IDisplayCategory<T extends IRecipe> {
     public List<AEISlot> setupDisplay();
 
     public boolean canDisplay(T recipe);
+
+    public void drawExtras();
+
+    public void addWidget(List<Control> controls);
 }
