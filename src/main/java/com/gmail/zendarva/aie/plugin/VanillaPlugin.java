@@ -6,10 +6,9 @@ import com.gmail.zendarva.aie.plugin.crafting.VanillaCraftingCategory;
 import com.gmail.zendarva.aie.plugin.crafting.VanillaCraftingRecipe;
 import com.gmail.zendarva.aie.plugin.crafting.VanillaShapedCraftingRecipe;
 import com.gmail.zendarva.aie.plugin.crafting.VanillaShapelessCraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
+import com.gmail.zendarva.aie.plugin.furnace.VanillaFurnaceCategory;
+import com.gmail.zendarva.aie.plugin.furnace.VanillaFurnaceRecipe;
+import net.minecraft.item.crafting.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +17,9 @@ public class VanillaPlugin implements RecipeLoadListener {
     @Override
     public void recipesLoaded(RecipeManager recipeManager) {
         List<VanillaCraftingRecipe> recipes = new LinkedList<>();
+        List<VanillaFurnaceRecipe> furnaceRecipes = new LinkedList<>();
         AEIRecipeManager.instance().addDisplayAdapter(new VanillaCraftingCategory());
+        AEIRecipeManager.instance().addDisplayAdapter(new VanillaFurnaceCategory());
 
         for (IRecipe recipe : recipeManager.getRecipes()) {
             if (recipe instanceof ShapelessRecipe){
@@ -27,8 +28,12 @@ public class VanillaPlugin implements RecipeLoadListener {
             if (recipe instanceof ShapedRecipe){
                 recipes.add(new VanillaShapedCraftingRecipe((ShapedRecipe) recipe));
             }
+            if (recipe instanceof FurnaceRecipe){
+                furnaceRecipes.add(new VanillaFurnaceRecipe((FurnaceRecipe) recipe));
+            }
         }
 
         AEIRecipeManager.instance().addRecipe("vanilla",recipes);
+        AEIRecipeManager.instance().addRecipe("furnace",furnaceRecipes);
     }
 }

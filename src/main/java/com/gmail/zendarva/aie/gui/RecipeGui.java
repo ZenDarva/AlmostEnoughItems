@@ -65,13 +65,9 @@ public class RecipeGui extends GuiContainer {
 
     @Override
     public void updateScreen() {
+        IRecipe recipe = recipes.get(categories.get(categoryPointer)).get(recipePointer);
         super.updateScreen();
-        cycleCounter++;
-        if (cycleCounter > 60) {
-            cycleCounter = 0;
-            updateItemPointer();
-            updateSlots();
-        }
+        slots.forEach(AEISlot::tick);
     }
 
 
@@ -193,57 +189,5 @@ public class RecipeGui extends GuiContainer {
         }
         updateRecipe();
         return true;
-    }
-
-    private void updateItemPointer(){
-        IRecipe recipe = recipes.get(categories.get(categoryPointer)).get(recipePointer);
-        for (int i = 0; i < recipe.getInput().size(); i++) {
-            int convertPointer = getSlotWithSize((VanillaCraftingRecipe) recipe,i);
-
-            if (convertPointer >= recipe.getInput().size())
-                    continue;
-            List targList= (List) recipe.getInput().get(i);
-            if (itemPointer[convertPointer] >= targList.size()-1)
-                itemPointer[convertPointer] =0;
-            else
-                itemPointer[convertPointer]++;
-        }
-    }
-
-    private void updateSlots() {
-        IRecipe recipe = recipes.get(categories.get(categoryPointer)).get(recipePointer);
-        for (int i = 0; i < recipe.getInput().size(); i++) {
-            int convertPointer = getSlotWithSize((VanillaCraftingRecipe) recipe,i);
-            if (convertPointer >= recipe.getInput().size())
-                continue;
-            List<ItemStack> targList= (List) recipe.getInput().get(i);
-            if (targList.isEmpty())
-                    continue;
-            slots.get(convertPointer).setStack(targList.get(itemPointer[i]));
-
-        }
-    }
-
-
-    private int getSlotWithSize(VanillaCraftingRecipe recipe, int num){
-        if (recipe.getWidth() == 1){
-            if (num == 1)
-                return 3;
-            if (num == 2)
-                return  6;
-        }
-
-        if (recipe.getWidth() == 2){
-            if (num == 2)
-                return 3;
-            if (num == 3)
-                return 4;
-            if (num == 4)
-                return 6;
-            if (num ==5)
-                return 7;
-
-        }
-        return num;
     }
 }

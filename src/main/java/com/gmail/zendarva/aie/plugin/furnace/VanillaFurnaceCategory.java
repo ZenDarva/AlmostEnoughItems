@@ -3,6 +3,7 @@ package com.gmail.zendarva.aie.plugin.furnace;
 import com.gmail.zendarva.aie.api.IDisplayCategory;
 import com.gmail.zendarva.aie.gui.widget.AEISlot;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class VanillaFurnaceCategory implements IDisplayCategory<VanillaFurnaceRecipe> {
@@ -26,7 +27,16 @@ public class VanillaFurnaceCategory implements IDisplayCategory<VanillaFurnaceRe
 
     @Override
     public List<AEISlot> setupDisplay() {
-        return null;
+        List<AEISlot> slots = new LinkedList<>();
+        AEISlot inputSlot = new AEISlot(100,100);
+        inputSlot.setStack(recipe.getInput().get(0).get(0));
+
+        AEISlot outputSlot = new AEISlot(100, 70);
+        outputSlot.setStack(recipe.getOutput().get(0));
+
+        slots.add(inputSlot);
+        slots.add(outputSlot);
+        return slots;
     }
 
     @Override

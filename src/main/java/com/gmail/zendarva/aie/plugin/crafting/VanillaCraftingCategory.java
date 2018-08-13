@@ -46,24 +46,12 @@ public class VanillaCraftingCategory implements IDisplayCategory<VanillaCrafting
         for (int i = 0; i < input.size(); i++) {
             if (recipe instanceof VanillaShapedCraftingRecipe){
                 if (!input.get(i).isEmpty())
-                    slots.get(getSlotWithSize(i)).setStack(input.get(i).get(0));
+                    slots.get(getSlotWithSize(i)).setStackList(input.get(i));
             }
             else
                 if (!input.get(i).isEmpty())
-                    slots.get(i).setStack(input.get(i).get(0));
+                    slots.get(i).setStackList(input.get(i));
         }
-//        if (input.size()>count && !input.get(count).isEmpty())
-//            slots.get(count).setStack(input.get(count).get(0));
-
-        for (List<ItemStack> itemStacks : input) {
-
-        }
-//        for (int y = 0; y<recipe.getHeight();y++){
-//            for (int x = 0;x<recipe.getWidth();x++) {
-//
-//            }
-//
-//        }
         AEISlot slot = new AEISlot(130,90);
 
         slot.setDrawBackground(true);

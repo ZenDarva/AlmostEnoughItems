@@ -19,6 +19,7 @@ import net.minecraft.util.text.ITextComponent;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,15 +27,36 @@ import java.util.List;
  */
 public class AEISlot extends Control {
     private static final ResourceLocation RECIPE_GUI = new ResourceLocation("almostenoughitems","textures/gui/recipecontainer.png");
-    private ItemStack stack;
     private boolean cheatable = false;
-
+    private List<ItemStack> itemList = new LinkedList<>();
+    private int itemListPointer=0;
+    private int displayCounter = 0;
     public boolean isDrawBackground() {
         return drawBackground;
     }
 
     public void move(int x, int y){
         rect.move(x+rect.x,rect.y+y);//Why the fuck?
+    }
+
+    @Override
+    public void tick() {
+        if (itemList.size()>1){
+            displayCounter++;
+        }
+
+        if (displayCounter > 60){
+            itemListPointer++;
+            if (itemListPointer>= itemList.size())
+                itemListPointer=0;
+            displayCounter=0;
+        }
+    }
+
+    public void setStackList(List<ItemStack>newItemList){
+        itemList=newItemList;
+        itemListPointer=0;
+        displayCounter=0;
     }
 
     public void setDrawBackground(boolean drawBackground) {
@@ -50,11 +72,16 @@ public class AEISlot extends Control {
     }
 
     public ItemStack getStack(){
-        return stack;
+        if (itemList.isEmpty()){
+            return ItemStack.EMPTY;
+        }
+        return itemList.get(itemListPointer);
     }
 
     public void setStack(ItemStack stack ){
-        this.stack = stack;
+        itemList.clear();
+        itemList.add(stack);
+        itemListPointer =0;
     }
 
     @Override
@@ -63,7 +90,7 @@ public class AEISlot extends Control {
             Minecraft.getMinecraft().getTextureManager().bindTexture(RECIPE_GUI);
             drawTexturedModalRect(rect.x-1, rect.y-1, backgroundUV.x, backgroundUV.y, rect.width, rect.height);
         }
-        if (stack == null)
+        if (getStack().isEmpty())
             return;
         RenderHelper.enableGUIStandardItemLighting();
         drawStack(rect.x,rect.y);
@@ -85,8 +112,8 @@ public class AEISlot extends Control {
             level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
         }
         if (level >1 && this.cheatable){
-            if (stack != null && ! stack.isEmpty()) {
-                ItemStack cheatyStack = stack.copy();
+            if (getStack() != null && ! getStack().isEmpty()) {
+                ItemStack cheatyStack = getStack().copy();
                 if (button == 0)
                     cheatyStack.setCount(1);
                 if (button == 1){
@@ -104,15 +131,15 @@ public class AEISlot extends Control {
         GuiContainer gui = AEIRenderHelper.getOverlayedGui();
         gui.zLevel = 200.0F;
         gui.itemRender.zLevel = 200.0F;
-        gui.itemRender.renderItemAndEffectIntoGUI(stack,x,y);
-        gui.itemRender.renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRenderer, stack, x, y - (gui.draggedStack.isEmpty() ? 0 : 8), "");
+        gui.itemRender.renderItemAndEffectIntoGUI(getStack(),x,y);
+        gui.itemRender.renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRenderer, getStack(), x, y - (gui.draggedStack.isEmpty() ? 0 : 8), "");
         gui.zLevel = 0.0F;
         gui.itemRender.zLevel = 0.0F;
     }
 
     public String getMod() {
-        if (stack != null) {
-            ResourceLocation location = Item.REGISTRY.getNameForObject(stack.getItem());
+        if (!getStack().isEmpty()) {
+            ResourceLocation location = Item.REGISTRY.getNameForObject(getStack().getItem());
             return location.getNamespace();
         }
         return "";
@@ -120,7 +147,7 @@ public class AEISlot extends Control {
 
     private List<String> getTooltip() {
         Minecraft mc = Minecraft.getMinecraft();
-        List unlocalizedTooltip = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips? ITooltipFlag.TooltipFlags.ADVANCED: ITooltipFlag.TooltipFlags.NORMAL);
+        List unlocalizedTooltip = getStack().getTooltip(mc.player, mc.gameSettings.advancedItemTooltips? ITooltipFlag.TooltipFlags.ADVANCED: ITooltipFlag.TooltipFlags.NORMAL);
         ArrayList toolTip = Lists.newArrayList();
         Iterator var4 = unlocalizedTooltip.iterator();
 

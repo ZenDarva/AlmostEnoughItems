@@ -44,12 +44,6 @@ public class VanillaShapedCraftingRecipe extends VanillaCraftingRecipe {
         int count= 0;
         for (Ingredient ingredient : recipe.getIngredients()) {
             List<ItemStack> ingList = new LinkedList<>();
-//            if ((recipe.getWidth() ==2 && recipe.getHeight() == 2) && (count ==2 || count >=5)){
-//                input.add(ingList);
-//                count ++;
-//                ingList = new LinkedList<>();
-//            }
-
             for (ItemStack matchingStack : ingredient.getMatchingStacks()) {
                 ingList.add(matchingStack);
             }
