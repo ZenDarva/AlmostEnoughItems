@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(GuiContainer.class)
 public abstract class MixinGuiContainer implements IGuiEventListenerDeferred {
-    @Shadow private Slot clickedSlot;
 
     @Inject(method = "drawScreen", at = @At("RETURN"))
     private void onDrawScreen(int p_drawScreen_1_, int p_drawScreen_2_, float p_drawScreen_3_, CallbackInfo ci) {

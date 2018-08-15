@@ -33,15 +33,14 @@ configurations {
 }
 
 dependencies {
-    implementation 'org.dimdev:rift:1.0.2-33:dev'
-    shade group: 'io.github.lukehutch', name: 'fast-classpath-scanner', version: '3.1.13'
+    implementation 'org.dimdev:rift:1.0.3-45:dev'
 }
 
 minecraft {
     version = '1.13'
     mappings = 'snapshot_5'
     runDir = 'run'
-    tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderTweaker'
+    tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderClientTweaker'
 }
 
 mixin {
@@ -55,4 +54,13 @@ jar {
             exclude 'META-INF', 'META-INF/**'
         }
     }
+}
+
+task devJar(type: Jar, dependsOn: classes) {
+    classifier 'dev'
+    from sourceSets.main.output
+}
+
+artifacts {
+    archives devJar
 }
