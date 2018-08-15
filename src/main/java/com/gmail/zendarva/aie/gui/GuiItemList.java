@@ -68,9 +68,12 @@ public class GuiItemList extends Drawable {
         controls.clear();
         controls.add(buttonLeft);
         controls.add(buttonRight);
-
-
+        String savedText = "";
+        if (searchBox != null){
+            savedText = searchBox.getText();
+        }
         searchBox = new TextBox(rect.x+rect.width/4, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),rect.width/2,20);
+        searchBox.setText(savedText);
         controls.add(searchBox);
         calculateSlots();
         updateView();

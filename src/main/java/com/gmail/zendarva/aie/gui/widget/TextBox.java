@@ -62,6 +62,9 @@ public class TextBox extends Control implements IFocusable {
     public String getText(){
         return textField.getText();
     }
+    public void setText(String value){
+        textField.setText(value);
+    }
 
     protected void charTyped(char p_charTyped_1_, int p_charTyped_2_){
         textField.charTyped(p_charTyped_1_, p_charTyped_2_);
