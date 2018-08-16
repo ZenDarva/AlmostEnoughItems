@@ -29,7 +29,7 @@ public class GuiItemList extends Drawable {
     private ArrayList<ItemStack> view;
     private Control lastHovered;
     protected boolean visible = true;
-
+    private int oldGuiLeft = 0;
 
     public GuiItemList(GuiContainer overlayedGui) {
         super(calculateRect(overlayedGui));
@@ -42,7 +42,7 @@ public class GuiItemList extends Drawable {
     }
     private static Rectangle calculateRect(GuiContainer overlayedGui) {
         MainWindow res = AEIRenderHelper.getResolution();
-        int startX = (int) ((res.getScaledWidth() - overlayedGui.guiLeft) + 10 / res.getGuiScaleFactor());
+        int startX = (overlayedGui.guiLeft +overlayedGui.xSize);
         int width = res.getScaledWidth() - startX;
         return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
@@ -59,6 +59,7 @@ public class GuiItemList extends Drawable {
                 return;
             }
         }
+        oldGuiLeft=overlayedGui.guiLeft;
         rect = calculateRect(overlayedGui);
         page =0;
         buttonLeft = new com.gmail.zendarva.aie.gui.widget.Button(rect.x+5, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),8,20,"<");
@@ -121,6 +122,8 @@ public class GuiItemList extends Drawable {
         if (!visible)
             return;
         if (needsResize == true)
+            resize();
+        if (oldGuiLeft != overlayedGui.guiLeft)
             resize();
         GlStateManager.pushMatrix();
         updateButtons();

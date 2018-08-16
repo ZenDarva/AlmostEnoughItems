@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MainWindow.class)
 public class MixinMinecraftResize {
     @Inject(method = "updateSize", at = @At("RETURN"))
-    private void onDrawScreen(CallbackInfo ci) {
+    private void onResize(CallbackInfo ci) {
         for (MinecraftResize listener : RiftLoader.instance.getListeners(MinecraftResize.class)) {
             listener.resize();
         }
