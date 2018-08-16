@@ -2,6 +2,7 @@ package com.gmail.zendarva.aie.gui.widget;
 
 import com.gmail.zendarva.aie.gui.AEIRenderHelper;
 import com.gmail.zendarva.aie.network.CheatPacket;
+import com.gmail.zendarva.aie.network.DeletePacket;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -110,9 +111,15 @@ public class AEISlot extends Control {
 
     private boolean onClick(int button) {
         int level = 0;
+        EntityPlayer player = null;
         if (Minecraft.getMinecraft().getIntegratedServer() != null) {
-            EntityPlayer player = Minecraft.getMinecraft().player;
+            player = Minecraft.getMinecraft().player;
             level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
+        }
+        if (level >1 && !(player.inventory.getItemStack().isEmpty())){
+            //Delete the itemstack.
+            Minecraft.getMinecraft().getConnection().sendPacket(new DeletePacket());
+            return true;
         }
         if (level >1 && this.cheatable){
             if (getStack() != null && ! getStack().isEmpty()) {
@@ -122,7 +129,7 @@ public class AEISlot extends Control {
                 if (button == 1){
                     cheatyStack.setCount(cheatyStack.getMaxStackSize());
                 }
-                Minecraft.getMinecraft().getConnection().sendPacket(new CheatPacket(cheatyStack,Minecraft.getMinecraft().player.getUniqueID()));
+                Minecraft.getMinecraft().getConnection().sendPacket(new CheatPacket(cheatyStack));
                 return true;
             }
         }

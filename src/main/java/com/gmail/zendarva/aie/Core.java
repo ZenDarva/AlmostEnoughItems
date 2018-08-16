@@ -7,6 +7,7 @@ import com.gmail.zendarva.aie.library.KeyBindManager;
 import com.gmail.zendarva.aie.listenerdefinitions.DoneLoading;
 import com.gmail.zendarva.aie.listenerdefinitions.RecipeLoadListener;
 import com.gmail.zendarva.aie.network.CheatPacket;
+import com.gmail.zendarva.aie.network.DeletePacket;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -75,6 +76,7 @@ public class Core implements DoneLoading, PacketAdder, RecipeLoadListener {
     @Override
     public void registerPlayPackets(PacketRegistrationReceiver receiver) {
         receiver.registerPacket(EnumPacketDirection.SERVERBOUND,CheatPacket.class);
+        receiver.registerPacket(EnumPacketDirection.SERVERBOUND, DeletePacket.class);
     }
 
     @Override
