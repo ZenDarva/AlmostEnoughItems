@@ -1,9 +1,6 @@
 package com.gmail.zendarva.aie.mixins;
 
-import com.gmail.zendarva.aie.listenerdefinitions.DoneLoading;
-import com.gmail.zendarva.aie.listenerdefinitions.DrawContainer;
-import com.gmail.zendarva.aie.listenerdefinitions.GuiCickListener;
-import com.gmail.zendarva.aie.listenerdefinitions.GuiKeyDown;
+import com.gmail.zendarva.aie.listenerdefinitions.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListenerDeferred;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -54,5 +51,15 @@ public abstract class MixinGuiContainer implements IGuiEventListenerDeferred {
             ci.setReturnValue(handled);
             ci.cancel();
         }
+    }
+
+    public boolean mouseScrolled(double p_mouseScrolled_1_){
+        boolean handled = false;
+        for (MouseScrollListener listener : RiftLoader.instance.getListeners(MouseScrollListener.class)) {
+            if (listener.mouseScrolled(p_mouseScrolled_1_)){
+                handled = true;
+            }
+        }
+        return handled;
     }
 }

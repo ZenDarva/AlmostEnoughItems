@@ -153,6 +153,16 @@ public class AEIRenderHelper {
         return false;
     }
 
+    public static boolean mouseScrolled(double direction) {
+        if (!aeiGui.visible)
+                return false;
+        if (direction > 0 && aeiGui.buttonLeft.isEnabled())
+            aeiGui.buttonLeft.onClick.apply(0);
+        else if(direction < 0 && aeiGui.buttonRight.isEnabled())
+            aeiGui.buttonRight.onClick.apply(0);
+        return true;
+    }
+
     private static class TooltipData {
 
         private final List<String> text;

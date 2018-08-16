@@ -1,17 +1,14 @@
 package com.gmail.zendarva.aie.listeners;
 
 import com.gmail.zendarva.aie.gui.AEIRenderHelper;
-import com.gmail.zendarva.aie.listenerdefinitions.CharInput;
-import com.gmail.zendarva.aie.listenerdefinitions.DrawContainer;
-import com.gmail.zendarva.aie.listenerdefinitions.GuiCickListener;
-import com.gmail.zendarva.aie.listenerdefinitions.GuiKeyDown;
+import com.gmail.zendarva.aie.listenerdefinitions.*;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import org.dimdev.rift.listener.client.ClientTickable;
 
 /**
  * Created by James on 7/27/2018.
  */
-public class DrawContainerListener implements DrawContainer, GuiCickListener, GuiKeyDown, CharInput, ClientTickable {
+public class DrawContainerListener implements DrawContainer, GuiCickListener, GuiKeyDown, CharInput, ClientTickable, MouseScrollListener {
     @Override
     public void draw(int x, int y, float dunno, GuiContainer gui) {
         AEIRenderHelper.setMouseLoc(x,y);
@@ -36,5 +33,10 @@ public class DrawContainerListener implements DrawContainer, GuiCickListener, Gu
     @Override
     public void clientTick() {
         AEIRenderHelper.tick();
+    }
+
+    @Override
+    public boolean mouseScrolled(double direction) {
+        return AEIRenderHelper.mouseScrolled(direction);
     }
 }
