@@ -26,7 +26,7 @@ public class CheatPacket implements Packet<INetHandlerPlayServer> {
 
     @Override
     public void readPacketData(PacketBuffer packetBuffer) throws IOException {
-        stack = ItemStack.func_199557_a(packetBuffer.readCompoundTag());
+        stack = ItemStack.loadFromNBT(packetBuffer.readCompoundTag());
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 
-    @Inject(method = "reload", at = @At("RETURN"))
+    @Inject(method = "onResourceManagerReload", at = @At("RETURN"))
     private void onBootstrapRegister(CallbackInfo ci) {
         for (RecipeLoadListener listener : RiftLoader.instance.getListeners(RecipeLoadListener.class)) {
             listener.recipesLoaded((RecipeManager)(Object)this);

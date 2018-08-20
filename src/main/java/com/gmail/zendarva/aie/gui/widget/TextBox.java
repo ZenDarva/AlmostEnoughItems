@@ -23,7 +23,7 @@ public class TextBox extends Control implements IFocusable {
 
     @Override
     public void draw() {
-        textField.func_195608_a(0,0,0);
+        textField.drawTextField(0,0,0);
     }
 
     @Override
