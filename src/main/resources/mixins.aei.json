@@ -3,7 +3,7 @@
   "minVersion": "0.7.7",
   "compatibilityLevel": "JAVA_8",
   "target": "@env(DEFAULT)",
-  "package": "com.gmail.zendarva.aie.mixins",
+  "package": "com.gmail.zendarva.aei.mixins",
   "refmap": "mixins.aei.refmap.json",
   "mixins": [
     "MixinDoneLoading",
