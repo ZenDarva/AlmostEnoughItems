@@ -1,5 +1,5 @@
 group 'com.gmail.zendarva'
-version '0.0.7'
+version '0.0.8'
 
 buildscript {
     repositories {
@@ -27,10 +27,6 @@ repositories {
     mavenCentral()
     maven { url 'https://www.dimdev.org/maven/' }
 }
-configurations {
-    shade
-    compile.extendsFrom shade
-}
 
 dependencies {
     implementation 'org.dimdev:rift:1.0.4-+:dev'
@@ -38,7 +34,7 @@ dependencies {
 
 minecraft {
     version = '1.13'
-    mappings = 'snapshot_20180817'
+    mappings = 'snapshot_20180823'
     runDir = 'run'
     tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderClientTweaker'
 }
@@ -48,14 +44,6 @@ mixin {
     add sourceSets.main, 'mixins.aei.refmap.json'
 }
 
-jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
-            exclude 'META-INF', 'META-INF/**'
-        }
-    }
-}
-
 task devJar(type: Jar, dependsOn: classes) {
     classifier 'dev'
     from sourceSets.main.output
@@ -63,4 +51,26 @@ task devJar(type: Jar, dependsOn: classes) {
 
 artifacts {
     archives devJar
+}
+
+uploadArchives {
+    repositories{
+        mavenDeployer{
+
+            repository(url: "http://theasylum.xyz:8080/archiva/repository/mcstuff"){
+                authentication(userName: project.properties.mavenUser, password: project.properties.mavenPassword)
+            }
+            snapshotRepository(url: "http://theasylum.xyz:8080/archiva/repository/mcstuff-snapshot"){
+                authentication(userName: project.properties.mavenUser, password: project.properties.mavenPassword)
+            }
+        }
+
+    }
+}
+print(project.properties.mavenUser)
+
+task snapshot{
+    if (project.hasProperty("version")){
+        project.setVersion(project.getProperties().get("version")+"-SNAPSHOT")
+    }
 }
