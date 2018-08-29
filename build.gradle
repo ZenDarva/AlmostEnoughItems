@@ -17,6 +17,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
+apply plugin: 'maven'
 
 archivesBaseName = 'AlmostEnoughItems'
 
