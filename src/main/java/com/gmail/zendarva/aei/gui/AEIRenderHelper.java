@@ -70,7 +70,9 @@ public class AEIRenderHelper {
     }
 
     public static GuiContainer getOverlayedGui() {
-        return overlayedGUI;
+        if (overlayedGUI instanceof GuiContainer)
+            return overlayedGUI;
+        return null;
     }
 
     public static void addToolTip(List<String> text, int x, int y) {

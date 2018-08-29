@@ -138,11 +138,9 @@ public class AEISlot extends Control {
 
     private void drawStack(int x, int y) {
         GuiContainer gui = AEIRenderHelper.getOverlayedGui();
-        gui.zLevel = 200.0F;
         AEIRenderHelper.getItemRender().zLevel = 200.0F;
         AEIRenderHelper.getItemRender().renderItemAndEffectIntoGUI(getStack(),x,y);
         AEIRenderHelper.getItemRender().renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRenderer, getStack(), x, y - (gui.draggedStack.isEmpty() ? 0 : 8), "");
-        gui.zLevel = 0.0F;
         AEIRenderHelper.getItemRender().zLevel = 0.0F;
     }
 
