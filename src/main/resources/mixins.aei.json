@@ -6,15 +6,13 @@
   "package": "com.gmail.zendarva.aei.mixins",
   "refmap": "mixins.aei.refmap.json",
   "mixins": [
-    "MixinDoneLoading",
+    "MixinDoneLoading"
+  ],
+  "client": [
     "MixinGuiContainer",
     "MixinMinecraftResize",
     "MixinKeyboardListener",
     "SettingsMixin",
     "MixinRecipeManager"
-
-  ],
-  "client": [
-
   ]
 }

@@ -1,5 +1,6 @@
 package com.gmail.zendarva.aei.gui;
 
+import com.gmail.zendarva.aei.ClientListener;
 import com.gmail.zendarva.aei.Core;
 import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Button;
@@ -10,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -48,11 +50,17 @@ public class GuiItemList extends Drawable {
 
     public boolean canCheat(){
         int level = 0;
-        EntityPlayer player = null;
-        if (Minecraft.getMinecraft().getIntegratedServer() != null) {
-            player = Minecraft.getMinecraft().player;
-            level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
-        }
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        level = player.getCommandSource().permissionLevel;
+//        if (Minecraft.getMinecraft().getIntegratedServer() != null) {
+//            player = Minecraft.getMinecraft().player;
+//            level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
+//        }
+//        else if(player instanceof EntityPlayerMP){
+//            if (player.getCommandSource().hasPermissionLevel(2))
+//                level = 2;
+//        }
+
         if (cheatMode)
         {
             if (level <1) {
@@ -219,7 +227,7 @@ public class GuiItemList extends Drawable {
 
         view.clear();
         if (searchText.equals("") || searchText==null){
-            for (ItemStack stack : Core.stackList) {
+            for (ItemStack stack : ClientListener.stackList) {
                 if (modText!= null){
                     if (getMod(stack).contains(modText)){
                         view.add(stack);
@@ -231,7 +239,7 @@ public class GuiItemList extends Drawable {
             }
         }
         else {
-           for (ItemStack stack : Core.stackList) {
+           for (ItemStack stack : ClientListener.stackList) {
                 if (stack.getItem().getName().getString().toLowerCase().contains(searchText))
                     if (modText!= null){
                         if (getMod(stack).contains(modText)){

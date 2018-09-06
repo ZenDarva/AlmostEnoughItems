@@ -7,6 +7,7 @@ public field ckn y Lata;
 public field ub d Lnet/minecraft/server/MinecraftServer;
 public-f field cfe d Ljava/util/Map;
 public field cfe h Lcfd$a;
+public field bu f I
 public field net.minecraft.client.gui.inventory.GuiContainer guiLeft I
 public field net.minecraft.client.gui.inventory.GuiContainer guiTop I
 public field net.minecraft.client.gui.inventory.GuiContainer hoveredSlot Lnet/minecraft/inventory/Slot;

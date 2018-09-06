@@ -10,6 +10,7 @@
     "com.gmail.zendarva.aei.listeners.DrawContainerListener",
     "com.gmail.zendarva.aei.listeners.ResizeListener",
     "com.gmail.zendarva.aei.library.KeyBindManager",
-    "com.gmail.zendarva.aei.plugin.VanillaPlugin"
+    {"class":"com.gmail.zendarva.aei.plugin.VanillaPlugin", "side":"client"},
+    {"class":"com.gmail.zendarva.aei.ClientListener", "side":"client"}
   ]
 }

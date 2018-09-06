@@ -30,6 +30,7 @@ public class AEIRecipeManager implements IRecipeManager {
 
     public static AEIRecipeManager instance(){
         if (myInstance == null){
+            System.out.println("Newing me up.");
             myInstance= new AEIRecipeManager();
         }
         return myInstance;

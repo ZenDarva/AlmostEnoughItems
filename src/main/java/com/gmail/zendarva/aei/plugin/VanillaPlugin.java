@@ -1,5 +1,6 @@
 package com.gmail.zendarva.aei.plugin;
 
+import com.gmail.zendarva.aei.api.IAEIPlugin;
 import com.gmail.zendarva.aei.impl.AEIRecipeManager;
 import com.gmail.zendarva.aei.listenerdefinitions.RecipeLoadListener;
 import com.gmail.zendarva.aei.plugin.crafting.VanillaCraftingCategory;
@@ -13,15 +14,15 @@ import net.minecraft.item.crafting.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class VanillaPlugin implements RecipeLoadListener {
+public class VanillaPlugin implements IAEIPlugin {
     @Override
-    public void recipesLoaded(RecipeManager recipeManager) {
+    public void register() {
         List<VanillaCraftingRecipe> recipes = new LinkedList<>();
         List<VanillaFurnaceRecipe> furnaceRecipes = new LinkedList<>();
         AEIRecipeManager.instance().addDisplayAdapter(new VanillaCraftingCategory());
         AEIRecipeManager.instance().addDisplayAdapter(new VanillaFurnaceCategory());
 
-        for (IRecipe recipe : recipeManager.getRecipes()) {
+        for (IRecipe recipe : AEIRecipeManager.instance().recipeManager.getRecipes()) {
             if (recipe instanceof ShapelessRecipe){
                 recipes.add(new VanillaShapelessCraftingRecipe((ShapelessRecipe) recipe));
             }
