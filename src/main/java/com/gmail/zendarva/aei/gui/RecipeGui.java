@@ -122,7 +122,8 @@ public class RecipeGui extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i1) {
-
+        
+        drawDefaultBackground();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
 
