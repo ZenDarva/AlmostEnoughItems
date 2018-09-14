@@ -161,6 +161,7 @@ public class RecipeGui extends GuiContainer {
     }
 
     private boolean btnCategoryLeft(int button){
+        recipePointer = 0;
         categoryPointer--;
         if (categoryPointer < 0){
             categoryPointer= categories.size()-1;
@@ -171,6 +172,7 @@ public class RecipeGui extends GuiContainer {
     }
 
     private boolean btnCategoryRight(int button){
+        recipePointer = 0;
         categoryPointer++;
         if (categoryPointer >= categories.size()){
             categoryPointer= 0;
