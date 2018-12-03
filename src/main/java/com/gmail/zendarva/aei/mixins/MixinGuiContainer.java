@@ -17,10 +17,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GuiContainer.class)
 public abstract class MixinGuiContainer implements IGuiEventListenerDeferred {
 
-    @Inject(method = "drawScreen", at = @At("RETURN"))
-    private void onDrawScreen(int p_drawScreen_1_, int p_drawScreen_2_, float p_drawScreen_3_, CallbackInfo ci) {
+    @Inject(method = "render", at = @At("RETURN"))
+    private void onRender(int p_drawScreen_1_, int p_drawScreen_2_, float p_drawScreen_3_, CallbackInfo ci) {
         for (DrawContainer listener : RiftLoader.instance.getListeners(DrawContainer.class)) {
-            listener.draw(p_drawScreen_1_,p_drawScreen_2_,p_drawScreen_3_, (GuiContainer) Minecraft.getMinecraft().currentScreen);
+            listener.draw(p_drawScreen_1_,p_drawScreen_2_,p_drawScreen_3_, (GuiContainer) Minecraft.getInstance().currentScreen);
         }
     }
 

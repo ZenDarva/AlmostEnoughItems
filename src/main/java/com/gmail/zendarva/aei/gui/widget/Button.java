@@ -37,10 +37,10 @@ public class Button extends Control {
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
         GuiContainer gui = AEIRenderHelper.getOverlayedGui();
-        Minecraft lvt_4_1_ = Minecraft.getMinecraft();
+        Minecraft lvt_4_1_ = Minecraft.getInstance();
         FontRenderer lvt_5_1_ = lvt_4_1_.fontRenderer;
         lvt_4_1_.getTextureManager().bindTexture(BUTTON_TEXTURES);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int hoverState =(byte)0;
         if (this.isEnabled()) {
             if (!this.isHighlighted())
@@ -50,7 +50,7 @@ public class Button extends Control {
         }
 
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         gui.drawTexturedModalRect(rect.x, rect.y, 0, 46 + hoverState * 20, rect.width / 2, rect.height);
         gui.drawTexturedModalRect(rect.x + rect.width / 2, rect.y, 200 - rect.width / 2, 46 + hoverState * 20, rect.width / 2, rect.height);

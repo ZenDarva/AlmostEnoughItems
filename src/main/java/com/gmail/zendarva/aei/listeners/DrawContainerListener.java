@@ -2,6 +2,7 @@ package com.gmail.zendarva.aei.listeners;
 
 import com.gmail.zendarva.aei.gui.AEIRenderHelper;
 import com.gmail.zendarva.aei.listenerdefinitions.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import org.dimdev.rift.listener.client.ClientTickable;
 
@@ -31,7 +32,7 @@ public class DrawContainerListener implements DrawContainer, GuiCickListener, Gu
     }
 
     @Override
-    public void clientTick() {
+    public void clientTick(final Minecraft minecraft) {
         AEIRenderHelper.tick();
     }
 

@@ -39,10 +39,10 @@ public class RecipeGui extends GuiContainer {
         this.container = p_i1072_1_;
         this.prevScreen = prevScreen;
         this.recipes = recipes;
-        this.mc = Minecraft.getMinecraft();
-        this.itemRender=mc.getRenderItem();
+        this.mc = Minecraft.getInstance();
+        this.itemRender=mc.getItemRenderer();
         this.fontRenderer= mc.fontRenderer;
-        this.mainWindow=Minecraft.getMinecraft().mainWindow;
+        this.mainWindow=Minecraft.getInstance().mainWindow;
 
         setupCategories();
     }
@@ -54,16 +54,16 @@ public class RecipeGui extends GuiContainer {
 
 
     @Override
-    public void drawScreen(int p_drawScreen_1_, int p_drawScreen_2_, float p_drawScreen_3_) {
-        super.drawScreen(p_drawScreen_1_, p_drawScreen_2_, p_drawScreen_3_);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
         int y = (int) ((mainWindow.getScaledHeight()/2 - this.guiHeight/2));
         drawCenteredString(this.fontRenderer,categories.get(categoryPointer).getDisplayName(),guiLeft + guiWidth/2,y+9,0x999999);
         controls.forEach(Control::draw);
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         slots.forEach(AEISlot::tick);
         controls.forEach(Control::tick);
     }
@@ -123,7 +123,7 @@ public class RecipeGui extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i1) {
 
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
 
         int lvt_4_1_ = (int) ((mainWindow.getScaledWidth()/2 -this.guiWidth/2));
@@ -145,7 +145,7 @@ public class RecipeGui extends GuiContainer {
 
 
         if (p_keyPressed_1_ == 259 && prevScreen !=null && AEIRenderHelper.focusedControl ==null){
-            Minecraft.getMinecraft().displayGuiScreen(prevScreen);
+            Minecraft.getInstance().displayGuiScreen(prevScreen);
             return true;
         }
 

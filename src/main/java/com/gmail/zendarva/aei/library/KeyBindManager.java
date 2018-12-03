@@ -21,7 +21,7 @@ public class KeyBindManager implements PreLoadOptions, KeybindHandler {
         KeyBinding newBinding;
         newBinding = new KeyBinding(bindingName, key, categoryName);
         if (optionsLoaded) {
-            ArrayUtils.add(Minecraft.getMinecraft().gameSettings.keyBindings, newBinding);
+            ArrayUtils.add(Minecraft.getInstance().gameSettings.keyBindings, newBinding);
         }
         else
         {
@@ -33,9 +33,9 @@ public class KeyBindManager implements PreLoadOptions, KeybindHandler {
     }
 
     private static void addCategoryIfMissing(String categoryName) {
-        if (!KeyBinding.CATEGORY_ORDER.containsKey(categoryName)){
+        /*if (!KeyBinding.CATEGORY_ORDER.containsKey(categoryName)){
             KeyBinding.CATEGORY_ORDER.put(categoryName,KeyBinding.CATEGORY_ORDER.size()+1);
-        }
+        }*/
     }
 
     @Override
@@ -50,7 +50,7 @@ public class KeyBindManager implements PreLoadOptions, KeybindHandler {
     }
 
     public static boolean processGuiKeybinds(int typedChar){
-        Optional<KeyBinding> binding= bindingFunctions.keySet().stream().filter(f->f.keyCode.getKeyCode() == typedChar).findFirst();
+        Optional<KeyBinding> binding= bindingFunctions.keySet().stream().filter(f->f.getDefault().getKeyCode() == typedChar).findFirst();
         if (binding.isPresent()){
             bindingFunctions.get(binding.get()).Sink();
             return true;

@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import java.awt.*;
@@ -50,8 +51,8 @@ public class GuiItemList extends Drawable {
 
     public boolean canCheat(){
         int level = 0;
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        level = player.getCommandSource().permissionLevel;
+        EntityPlayer player = Minecraft.getInstance().player;
+        //level = player.getCommandSource().permissionLevel; // << TODO - Get Permission Level in 1.13
 //        if (Minecraft.getMinecraft().getIntegratedServer() != null) {
 //            player = Minecraft.getMinecraft().player;
 //            level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
@@ -74,16 +75,17 @@ public class GuiItemList extends Drawable {
 
     private static Rectangle calculateRect(GuiContainer overlayedGui) {
         MainWindow res = AEIRenderHelper.getResolution();
-        int startX = (overlayedGui.guiLeft +overlayedGui.xSize) + 10;
+        int startX = (overlayedGui.guiLeft + overlayedGui.xSize) + 10;
         int width = res.getScaledWidth() - startX;
         return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
 
     protected void resize() {
         MainWindow res = AEIRenderHelper.getResolution();
-        if (overlayedGui!= Minecraft.getMinecraft().currentScreen){
-            if (Minecraft.getMinecraft().currentScreen instanceof GuiContainer){
-                overlayedGui= (GuiContainer) Minecraft.getMinecraft().currentScreen;
+
+        if (overlayedGui!= Minecraft.getInstance().currentScreen){
+            if (Minecraft.getInstance().currentScreen instanceof GuiContainer){
+                overlayedGui= (GuiContainer) Minecraft.getInstance().currentScreen;
 
             }
             else{
@@ -265,7 +267,7 @@ public class GuiItemList extends Drawable {
 
     private String getMod(ItemStack stack) {
         if (stack != null && !stack.isEmpty()) {
-            ResourceLocation location = Item.REGISTRY.getKey(stack.getItem());
+            ResourceLocation location = IRegistry.ITEM.getKey(stack.getItem());
             return location.getNamespace();
         }
         return "";

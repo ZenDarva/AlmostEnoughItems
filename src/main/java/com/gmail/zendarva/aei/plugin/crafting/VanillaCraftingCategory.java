@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class VanillaCraftingCategory implements IDisplayCategory<VanillaCraftingRecipe> {
-    MainWindow mainWindow = Minecraft.getMinecraft().mainWindow;
+    MainWindow mainWindow = Minecraft.getInstance().mainWindow;
     private VanillaCraftingRecipe recipe;
 
     @Override

@@ -40,7 +40,7 @@ public class AEIRenderHelper {
 
     public static MainWindow getResolution() {
 
-        return Minecraft.getMinecraft().mainWindow;
+        return Minecraft.getInstance().mainWindow;
     }
 
     public static void drawAEI(GuiContainer overlayedGui) {
@@ -57,16 +57,16 @@ public class AEIRenderHelper {
             aeiGui.resize();
         }
         if (overlayedGUI instanceof RecipeGui){
-            overlayedGUI.onResize(Minecraft.getMinecraft(), 0,0);
+            overlayedGUI.onResize(Minecraft.getInstance(), 0,0);
         }
     }
 
     public static ItemRenderer getItemRender() {
-        return Minecraft.getMinecraft().getRenderItem();
+        return Minecraft.getInstance().getItemRenderer();
     }
 
     public static FontRenderer getFontRenderer() {
-        return Minecraft.getMinecraft().fontRenderer;
+        return Minecraft.getInstance().fontRenderer;
     }
 
     public static GuiContainer getOverlayedGui() {
@@ -186,12 +186,12 @@ public class AEIRenderHelper {
         aeiGui.updateView();
     }
     public static void tick(){
-        if (aeiGui !=null && Minecraft.getMinecraft().currentScreen== overlayedGUI)
+        if (aeiGui !=null && Minecraft.getInstance().currentScreen== overlayedGUI)
             aeiGui.tick();
     }
 
     public static void recipeKeybind(){
-        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer))
+        if (!(Minecraft.getInstance().currentScreen instanceof GuiContainer))
             return;
         Control control = aeiGui.getLastHovered();
         if (control != null && control.isHighlighted() && control instanceof AEISlot) {
@@ -199,14 +199,14 @@ public class AEIRenderHelper {
             AEIRecipeManager.instance().displayRecipesFor(slot.getStack());
             return;
         }
-        if (overlayedGUI.hoveredSlot != null){
+        if (overlayedGUI.hoveredSlot != null) {
             ItemStack stack = overlayedGUI.hoveredSlot.getStack();
             AEIRecipeManager.instance().displayRecipesFor(stack);
         }
 
     }
     public static void useKeybind(){
-        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer))
+        if (!(Minecraft.getInstance().currentScreen instanceof GuiContainer))
             return;
         Control control = aeiGui.getLastHovered();
         if (control != null && control.isHighlighted() && control instanceof AEISlot) {
@@ -222,7 +222,7 @@ public class AEIRenderHelper {
     }
 
     public static void hideKeybind(){
-        if (Minecraft.getMinecraft().currentScreen==overlayedGUI && aeiGui!=null){
+        if (Minecraft.getInstance().currentScreen==overlayedGUI && aeiGui!=null){
             aeiGui.visible=!aeiGui.visible;
         }
     }

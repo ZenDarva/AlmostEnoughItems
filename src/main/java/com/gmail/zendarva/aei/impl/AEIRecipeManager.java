@@ -140,15 +140,15 @@ public class AEIRecipeManager implements IRecipeManager {
         Map<IDisplayCategory,List<IRecipe>> recipes = AEIRecipeManager.instance().getRecipesFor(stack);
         if (recipes.isEmpty())
             return;
-        RecipeGui gui = new RecipeGui(null, Minecraft.getMinecraft().currentScreen, recipes);
-        Minecraft.getMinecraft().displayGuiScreen(gui);
+        RecipeGui gui = new RecipeGui(null, Minecraft.getInstance().currentScreen, recipes);
+        Minecraft.getInstance().displayGuiScreen(gui);
     }
 
     public void displayUsesFor(ItemStack stack){
         Map<IDisplayCategory,List<IRecipe>> recipes = AEIRecipeManager.instance().getUsesFor(stack);
         if (recipes.isEmpty())
             return;
-        RecipeGui gui = new RecipeGui(null, Minecraft.getMinecraft().currentScreen, recipes);
-        Minecraft.getMinecraft().displayGuiScreen(gui);
+        RecipeGui gui = new RecipeGui(null, Minecraft.getInstance().currentScreen, recipes);
+        Minecraft.getInstance().displayGuiScreen(gui);
     }
 }

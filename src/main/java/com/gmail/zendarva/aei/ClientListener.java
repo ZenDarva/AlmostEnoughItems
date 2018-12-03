@@ -13,6 +13,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.registry.IRegistry;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ClientListener implements DoneLoading, RecipeLoadListener {
     }
 
     private void buildItemList() {
-        Item.REGISTRY.forEach(this::processItem);
+        IRegistry.ITEM.forEach(this::processItem);
     }
 
     private void processItem(Item item){
