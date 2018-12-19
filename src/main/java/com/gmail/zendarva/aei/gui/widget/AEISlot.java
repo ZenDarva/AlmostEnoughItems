@@ -1,6 +1,7 @@
 package com.gmail.zendarva.aei.gui.widget;
 
 import com.gmail.zendarva.aei.gui.AEIRenderHelper;
+import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
 import com.gmail.zendarva.aei.network.CheatPacket;
 import com.gmail.zendarva.aei.network.DeletePacket;
 import com.google.common.collect.Lists;
@@ -141,13 +142,18 @@ public class AEISlot extends Control {
         GuiContainer gui = AEIRenderHelper.getOverlayedGui();
         AEIRenderHelper.getItemRender().zLevel = 200.0F;
         AEIRenderHelper.getItemRender().renderItemAndEffectIntoGUI(getStack(),x,y);
-        AEIRenderHelper.getItemRender().renderItemOverlayIntoGUI(Minecraft.getInstance().fontRenderer, getStack(), x, y - (gui.draggedStack.isEmpty() ? 0 : 8), "");
+        assert gui != null;
+        if (((IMixinGuiContainer) gui).getDraggedStack().isEmpty())
+            AEIRenderHelper.getItemRender().renderItemOverlayIntoGUI(Minecraft.getInstance().fontRenderer, getStack(), x, y - 0, "");
+        else
+            AEIRenderHelper.getItemRender().renderItemOverlayIntoGUI(Minecraft.getInstance().fontRenderer, getStack(), x, y - 8, "");
         AEIRenderHelper.getItemRender().zLevel = 0.0F;
     }
 
     public String getMod() {
         if (!getStack().isEmpty()) {
             ResourceLocation location = IRegistry.ITEM.getKey(getStack().getItem());
+            assert location != null;
             return location.getNamespace();
         }
         return "";
@@ -155,15 +161,13 @@ public class AEISlot extends Control {
 
     private List<String> getTooltip() {
         Minecraft mc = Minecraft.getInstance();
-        List unlocalizedTooltip = getStack().getTooltip(mc.player, mc.gameSettings.advancedItemTooltips? ITooltipFlag.TooltipFlags.ADVANCED: ITooltipFlag.TooltipFlags.NORMAL);
-        ArrayList toolTip = Lists.newArrayList();
-        Iterator var4 = unlocalizedTooltip.iterator();
-
-        while(var4.hasNext()) {
-            ITextComponent unlocalizedTip = (ITextComponent)var4.next();
-            toolTip.add(unlocalizedTip.shallowCopy().getFormattedText()); // TODO - Ensure this is Correct
+        GuiContainer gui = AEIRenderHelper.getOverlayedGui();
+        List<String> toolTip = Lists.newArrayList();
+        if(gui!=null){
+            toolTip = gui.getItemToolTip(getStack());
+        }else{
+            toolTip.add(getStack().getDisplayName().getFormattedText());
         }
-
         if (extraTooltip !=null){
             toolTip.add(extraTooltip);
         }

@@ -122,7 +122,7 @@ public class RecipeGui extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i1) {
-
+        drawDefaultBackground();
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
 
@@ -161,6 +161,7 @@ public class RecipeGui extends GuiContainer {
     }
 
     private boolean btnCategoryLeft(int button){
+        recipePointer = 0;
         categoryPointer--;
         if (categoryPointer < 0){
             categoryPointer= categories.size()-1;
@@ -171,6 +172,7 @@ public class RecipeGui extends GuiContainer {
     }
 
     private boolean btnCategoryRight(int button){
+        recipePointer = 0;
         categoryPointer++;
         if (categoryPointer >= categories.size()){
             categoryPointer= 0;

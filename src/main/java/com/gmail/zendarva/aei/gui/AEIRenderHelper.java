@@ -5,6 +5,7 @@ import com.gmail.zendarva.aei.gui.widget.Control;
 import com.gmail.zendarva.aei.gui.widget.IFocusable;
 import com.gmail.zendarva.aei.impl.AEIRecipeManager;
 import com.gmail.zendarva.aei.library.KeyBindManager;
+import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -199,8 +200,8 @@ public class AEIRenderHelper {
             AEIRecipeManager.instance().displayRecipesFor(slot.getStack());
             return;
         }
-        if (overlayedGUI.hoveredSlot != null) {
-            ItemStack stack = overlayedGUI.hoveredSlot.getStack();
+        if (((IMixinGuiContainer)overlayedGUI).getHoveredSlot() != null) {
+            ItemStack stack = ((IMixinGuiContainer)overlayedGUI).getHoveredSlot().getStack();
             AEIRecipeManager.instance().displayRecipesFor(stack);
         }
 
@@ -214,8 +215,8 @@ public class AEIRenderHelper {
             AEIRecipeManager.instance().displayUsesFor(slot.getStack());
             return;
         }
-        if (overlayedGUI.hoveredSlot != null){
-            ItemStack stack = overlayedGUI.hoveredSlot.getStack();
+        if (((IMixinGuiContainer)overlayedGUI).getHoveredSlot() != null){
+            ItemStack stack = ((IMixinGuiContainer)overlayedGUI).getHoveredSlot().getStack();
             AEIRecipeManager.instance().displayUsesFor(stack);
         }
 

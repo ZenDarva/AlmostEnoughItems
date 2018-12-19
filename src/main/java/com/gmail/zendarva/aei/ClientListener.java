@@ -41,7 +41,10 @@ public class ClientListener implements DoneLoading, RecipeLoadListener {
     }
 
     private void buildItemList() {
-        IRegistry.ITEM.forEach(this::processItem);
+        if(!IRegistry.ITEM.isEmpty()) {
+            IRegistry.ITEM.forEach(item->processItem((Item) item));
+        }
+
     }
 
     private void processItem(Item item){

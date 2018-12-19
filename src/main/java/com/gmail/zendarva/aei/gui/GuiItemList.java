@@ -6,6 +6,7 @@ import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Button;
 import com.gmail.zendarva.aei.gui.widget.Control;
 import com.gmail.zendarva.aei.gui.widget.TextBox;
+import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -50,21 +51,10 @@ public class GuiItemList extends Drawable {
     }
 
     public boolean canCheat(){
-        int level = 0;
         EntityPlayer player = Minecraft.getInstance().player;
-        //level = player.getCommandSource().permissionLevel; // << TODO - Get Permission Level in 1.13
-//        if (Minecraft.getMinecraft().getIntegratedServer() != null) {
-//            player = Minecraft.getMinecraft().player;
-//            level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
-//        }
-//        else if(player instanceof EntityPlayerMP){
-//            if (player.getCommandSource().hasPermissionLevel(2))
-//                level = 2;
-//        }
-
         if (cheatMode)
         {
-            if (level <1) {
+            if (!player.hasPermissionLevel(1)) {
                 cheatClicked(0);
                 return false;
             }
@@ -75,7 +65,7 @@ public class GuiItemList extends Drawable {
 
     private static Rectangle calculateRect(GuiContainer overlayedGui) {
         MainWindow res = AEIRenderHelper.getResolution();
-        int startX = (overlayedGui.guiLeft + overlayedGui.xSize) + 10;
+        int startX = (((IMixinGuiContainer)overlayedGui).getGuiLeft() + ((IMixinGuiContainer)overlayedGui).getXSize()) + 10;
         int width = res.getScaledWidth() - startX;
         return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
@@ -93,7 +83,7 @@ public class GuiItemList extends Drawable {
                 return;
             }
         }
-        oldGuiLeft=overlayedGui.guiLeft;
+        oldGuiLeft=((IMixinGuiContainer)overlayedGui).getGuiLeft();
         rect = calculateRect(overlayedGui);
         page =0;
         buttonLeft = new com.gmail.zendarva.aei.gui.widget.Button(rect.x+5, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),8,20,"<");
@@ -160,7 +150,7 @@ public class GuiItemList extends Drawable {
             return;
         if (needsResize == true)
             resize();
-        if (oldGuiLeft != overlayedGui.guiLeft)
+        if (oldGuiLeft != ((IMixinGuiContainer)overlayedGui).getGuiLeft())
             resize();
         GlStateManager.pushMatrix();
         updateButtons();
