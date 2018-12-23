@@ -9,13 +9,6 @@ import com.gmail.zendarva.aei.listenerdefinitions.RecipeLoadListener;
 import com.gmail.zendarva.aei.network.CheatPacket;
 import com.gmail.zendarva.aei.network.DeletePacket;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.EnumPacketDirection;
-import net.minecraft.util.NonNullList;
-import org.dimdev.rift.listener.PacketAdder;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;

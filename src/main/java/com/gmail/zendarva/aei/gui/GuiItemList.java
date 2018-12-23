@@ -6,16 +6,18 @@ import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Button;
 import com.gmail.zendarva.aei.gui.widget.Control;
 import com.gmail.zendarva.aei.gui.widget.TextBox;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.Window;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 public class GuiItemList extends Drawable {
 
     public static final int FOOTERSIZE = 70;
-    private GuiContainer overlayedGui;
+    private ContainerGui overlayedGui;
     private static int page=0;
     private ArrayList<AEISlot> displaySlots;
     protected ArrayList<Control> controls;
@@ -38,7 +40,7 @@ public class GuiItemList extends Drawable {
     private int oldGuiLeft = 0;
     private boolean cheatMode = false;
 
-    public GuiItemList(GuiContainer overlayedGui) {
+    public GuiItemList(ContainerGui overlayedGui) {
         super(calculateRect(overlayedGui));
         displaySlots = new ArrayList<>();
         controls = new ArrayList<>();
@@ -49,21 +51,10 @@ public class GuiItemList extends Drawable {
     }
 
     public boolean canCheat(){
-        int level = 0;
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        level = player.getCommandSource().permissionLevel;
-//        if (Minecraft.getMinecraft().getIntegratedServer() != null) {
-//            player = Minecraft.getMinecraft().player;
-//            level = Minecraft.getMinecraft().getIntegratedServer().getPermissionLevel(player.getGameProfile());
-//        }
-//        else if(player instanceof EntityPlayerMP){
-//            if (player.getCommandSource().hasPermissionLevel(2))
-//                level = 2;
-//        }
-
+        PlayerEntity player = MinecraftClient.getInstance().player;
         if (cheatMode)
         {
-            if (level <1) {
+            if (!player.allowsPermissionLevel(1)) {
                 cheatClicked(0);
                 return false;
             }
@@ -72,18 +63,19 @@ public class GuiItemList extends Drawable {
         return false;
     }
 
-    private static Rectangle calculateRect(GuiContainer overlayedGui) {
-        MainWindow res = AEIRenderHelper.getResolution();
-        int startX = (overlayedGui.guiLeft +overlayedGui.xSize) + 10;
+    private static Rectangle calculateRect(ContainerGui overlayedGui) {
+        Window res = AEIRenderHelper.getResolution();
+        int startX = (((IMixinGuiContainer)overlayedGui).getGuiLeft() + ((IMixinGuiContainer)overlayedGui).getXSize()) + 10;
         int width = res.getScaledWidth() - startX;
         return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
 
     protected void resize() {
-        MainWindow res = AEIRenderHelper.getResolution();
-        if (overlayedGui!= Minecraft.getMinecraft().currentScreen){
-            if (Minecraft.getMinecraft().currentScreen instanceof GuiContainer){
-                overlayedGui= (GuiContainer) Minecraft.getMinecraft().currentScreen;
+        Window res = AEIRenderHelper.getResolution();
+
+        if (overlayedGui!= MinecraftClient.getInstance().currentGui){
+            if (MinecraftClient.getInstance().currentGui instanceof ContainerGui){
+                overlayedGui= (ContainerGui) MinecraftClient.getInstance().currentGui;
 
             }
             else{
@@ -91,7 +83,7 @@ public class GuiItemList extends Drawable {
                 return;
             }
         }
-        oldGuiLeft=overlayedGui.guiLeft;
+        oldGuiLeft=((IMixinGuiContainer)overlayedGui).getGuiLeft();
         rect = calculateRect(overlayedGui);
         page =0;
         buttonLeft = new com.gmail.zendarva.aei.gui.widget.Button(rect.x+5, (int) (rect.height-Math.max(32/res.getGuiScaleFactor(),22)),8,20,"<");
@@ -133,7 +125,7 @@ public class GuiItemList extends Drawable {
     private void calculateSlots() {
         int x = rect.x;
         int y = rect.y;
-        MainWindow res = AEIRenderHelper.getResolution();
+        Window res = AEIRenderHelper.getResolution();
         displaySlots.clear();
         int xOffset = 4;
         int yOffset = 4;
@@ -158,7 +150,7 @@ public class GuiItemList extends Drawable {
             return;
         if (needsResize == true)
             resize();
-        if (oldGuiLeft != overlayedGui.guiLeft)
+        if (oldGuiLeft != ((IMixinGuiContainer)overlayedGui).getGuiLeft())
             resize();
         GlStateManager.pushMatrix();
         updateButtons();
@@ -206,11 +198,9 @@ public class GuiItemList extends Drawable {
 
     private String getCheatModeText(){
         if (cheatMode){
-            TextComponentTranslation cheat = new TextComponentTranslation("text.aei.cheat",new Object[]{null});
-            return cheat.getFormattedText();
+            return new StringTextComponent(I18n.translate("text.aei.cheat")).getFormattedText();
         }
-        TextComponentTranslation noCheat = new TextComponentTranslation("text.aei.nocheat",new Object[]{null});
-        return noCheat.getFormattedText();
+        return new StringTextComponent(I18n.translate("text.aei.nocheat")).getFormattedText();
     }
 
     protected void updateView(){
@@ -240,7 +230,7 @@ public class GuiItemList extends Drawable {
         }
         else {
            for (ItemStack stack : ClientListener.stackList) {
-                if (stack.getItem().getName().getString().toLowerCase().contains(searchText))
+                if (stack.getItem().getTextComponent().getString().toLowerCase().contains(searchText))
                     if (modText!= null){
                         if (getMod(stack).contains(modText)){
                             view.add(stack);
@@ -265,7 +255,7 @@ public class GuiItemList extends Drawable {
 
     private String getMod(ItemStack stack) {
         if (stack != null && !stack.isEmpty()) {
-            ResourceLocation location = Item.REGISTRY.getKey(stack.getItem());
+            Identifier location = Registry.ITEM.getId(stack.getItem());
             return location.getNamespace();
         }
         return "";

@@ -2,10 +2,10 @@ package com.gmail.zendarva.aei.gui.widget;
 
 import com.gmail.zendarva.aei.api.TriBooleanProducer;
 import com.gmail.zendarva.aei.gui.Drawable;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 
 import java.awt.*;
 import java.util.function.BiConsumer;
@@ -36,7 +36,9 @@ public abstract class Control extends Drawable {
     }
 
     public void move(int x, int y){
-        rect.move(x+rect.x,rect.y+y);//Why the fuck?
+        rect.x+=x;
+        rect.y+=y;
+        //rect.move(x+rect.x,rect.y+y);//Why the fuck?
     }
 
     protected static void drawRect(int p_drawRect_0_, int p_drawRect_1_, int p_drawRect_2_, int p_drawRect_3_, int p_drawRect_4_) {
@@ -58,33 +60,33 @@ public abstract class Control extends Drawable {
         float lvt_7_1_ = (float) (p_drawRect_4_ >> 8 & 255) / 255.0F;
         float lvt_8_1_ = (float) (p_drawRect_4_ & 255) / 255.0F;
         Tessellator lvt_9_1_ = Tessellator.getInstance();
-        BufferBuilder lvt_10_1_ = lvt_9_1_.getBuffer();
-        GlStateManager.enableAlpha();
+        BufferBuilder lvt_10_1_ = lvt_9_1_.getBufferBuilder();
+        GlStateManager.enableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_1);
-        lvt_10_1_.begin(7, DefaultVertexFormats.POSITION);
-        lvt_10_1_.pos((double) p_drawRect_0_, (double) p_drawRect_3_, 0.0D).endVertex();
-        lvt_10_1_.pos((double) p_drawRect_2_, (double) p_drawRect_3_, 0.0D).endVertex();
-        lvt_10_1_.pos((double) p_drawRect_2_, (double) p_drawRect_1_, 0.0D).endVertex();
-        lvt_10_1_.pos((double) p_drawRect_0_, (double) p_drawRect_1_, 0.0D).endVertex();
+        GlStateManager.blendFuncSeparate(GlStateManager.SrcBlendFactor.SRC_ALPHA, GlStateManager.DstBlendFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcBlendFactor.ONE, GlStateManager.DstBlendFactor.ZERO);
+        GlStateManager.color4f(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_1);
+        lvt_10_1_.begin(7, VertexFormats.POSITION);
+        lvt_10_1_.vertex((double) p_drawRect_0_, (double) p_drawRect_3_, 0.0D).next();
+        lvt_10_1_.vertex((double) p_drawRect_2_, (double) p_drawRect_3_, 0.0D).next();
+        lvt_10_1_.vertex((double) p_drawRect_2_, (double) p_drawRect_1_, 0.0D).next();
+        lvt_10_1_.vertex((double) p_drawRect_0_, (double) p_drawRect_1_, 0.0D).next();
         lvt_9_1_.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
     }
 
     protected void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {
         float lvt_7_1_ = 0.00390625F;
         float lvt_8_1_ = 0.00390625F;
         Tessellator lvt_9_1_ = Tessellator.getInstance();
-        BufferBuilder lvt_10_1_ = lvt_9_1_.getBuffer();
-        lvt_10_1_.begin(7, DefaultVertexFormats.POSITION_TEX);
-        lvt_10_1_.pos((double)(x + 0), (double)(y + height), (double)200).tex((double)((float)(u + 0) * 0.00390625F), (double)((float)(v + height) * 0.00390625F)).endVertex();
-        lvt_10_1_.pos((double)(x + width), (double)(y + height), (double)200).tex((double)((float)(u + width) * 0.00390625F), (double)((float)(v + height) * 0.00390625F)).endVertex();
-        lvt_10_1_.pos((double)(x + width), (double)(y + 0), (double)200).tex((double)((float)(u + width) * 0.00390625F), (double)((float)(v + 0) * 0.00390625F)).endVertex();
-        lvt_10_1_.pos((double)(x + 0), (double)(y + 0), (double)200).tex((double)((float)(u + 0) * 0.00390625F), (double)((float)(v + 0) * 0.00390625F)).endVertex();
+        BufferBuilder lvt_10_1_ = lvt_9_1_.getBufferBuilder();
+        lvt_10_1_.begin(7, VertexFormats.POSITION_UV); // TODO: Verify for POSITION_TEX in 1.14
+        lvt_10_1_.vertex((double)(x + 0), (double)(y + height), (double)200).texture((double)((float)(u + 0) * 0.00390625F), (double)((float)(v + height) * 0.00390625F)).next();
+        lvt_10_1_.vertex((double)(x + width), (double)(y + height), (double)200).texture((double)((float)(u + width) * 0.00390625F), (double)((float)(v + height) * 0.00390625F)).next();
+        lvt_10_1_.vertex((double)(x + width), (double)(y + 0), (double)200).texture((double)((float)(u + width) * 0.00390625F), (double)((float)(v + 0) * 0.00390625F)).next();
+        lvt_10_1_.vertex((double)(x + 0), (double)(y + 0), (double)200).texture((double)((float)(u + 0) * 0.00390625F), (double)((float)(v + 0) * 0.00390625F)).next();
         lvt_9_1_.draw();
     }
 

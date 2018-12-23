@@ -1,0 +1,14 @@
+{
+  "id": "almostenoughitems",
+  "name": "AlmostEnoughItems",
+  "version": "0.0.8",
+  "side": "universal",
+  "initializer": "com.gmail.zendarva.aei.Core",
+  "description": "EX DESC",
+  "requires": {
+    "fabric": "*"
+  },
+  "mixins": {
+	"common": "mixins.aei.json"
+  }
+}

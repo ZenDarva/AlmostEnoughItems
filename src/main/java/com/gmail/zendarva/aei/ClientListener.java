@@ -7,12 +7,13 @@ import com.gmail.zendarva.aei.library.KeyBindManager;
 import com.gmail.zendarva.aei.listenerdefinitions.DoneLoading;
 import com.gmail.zendarva.aei.listenerdefinitions.RecipeLoadListener;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.util.DefaultedList;
+import net.minecraft.util.registry.Registry;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -40,13 +41,16 @@ public class ClientListener implements DoneLoading, RecipeLoadListener {
     }
 
     private void buildItemList() {
-        Item.REGISTRY.forEach(this::processItem);
+        if(!Registry.ITEM.isEmpty()) {
+            Registry.ITEM.forEach(item->processItem(item));
+        }
+
     }
 
     private void processItem(Item item){
-        NonNullList<ItemStack> items = NonNullList.create();
+        DefaultedList<ItemStack> items = DefaultedList.create();
         try {
-            item.fillItemGroup(item.getGroup(),items);
+            item.fillItemGroup(item.getItemGroup(),items);
             items.forEach(stackList::add);
         }
         catch(NullPointerException e) {
@@ -58,6 +62,6 @@ public class ClientListener implements DoneLoading, RecipeLoadListener {
     }
 
     @Override
-    public void recipesLoaded(net.minecraft.item.crafting.RecipeManager recipeManager) {
+    public void recipesLoaded(RecipeManager recipeManager) {
         AEIRecipeManager.instance().RecipesLoaded(recipeManager);
     }}

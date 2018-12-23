@@ -1,30 +1,26 @@
 package com.gmail.zendarva.aei.gui.widget;
 
 import com.gmail.zendarva.aei.gui.AEIRenderHelper;
+import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
 import com.gmail.zendarva.aei.network.CheatPacket;
 import com.gmail.zendarva.aei.network.DeletePacket;
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.render.GuiLighting;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 /**
  * Created by James on 7/28/2018.
  */
 public class AEISlot extends Control {
-    private static final ResourceLocation RECIPE_GUI = new ResourceLocation("almostenoughitems","textures/gui/recipecontainer.png");
+    private static final Identifier RECIPE_GUI = new Identifier("almostenoughitems","textures/gui/recipecontainer.png");
     private boolean cheatable = false;
     private List<ItemStack> itemList = new LinkedList<>();
     private int itemListPointer=0;
@@ -88,12 +84,12 @@ public class AEISlot extends Control {
     @Override
     public void draw() {
         if (drawBackground) {
-            Minecraft.getMinecraft().getTextureManager().bindTexture(RECIPE_GUI);
+            MinecraftClient.getInstance().getTextureManager().bindTexture(RECIPE_GUI);
             drawTexturedModalRect(rect.x-1, rect.y-1, backgroundUV.x, backgroundUV.y, rect.width, rect.height);
         }
         if (getStack().isEmpty())
             return;
-        RenderHelper.enableGUIStandardItemLighting();
+        GuiLighting.enable();
         drawStack(rect.x,rect.y);
         if (isHighlighted())
             drawTooltip();
@@ -107,13 +103,13 @@ public class AEISlot extends Control {
     }
 
     private boolean onClick(int button) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if (AEIRenderHelper.aeiGui.canCheat() && !(player.inventory.getItemStack().isEmpty())){
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        if (AEIRenderHelper.aeiGui.canCheat() && !(player.inventory.getCursorStack().isEmpty())){
             //Delete the itemstack.
-            Minecraft.getMinecraft().getConnection().sendPacket(new DeletePacket());
+            MinecraftClient.getInstance().getNetworkHandler().sendPacket(new DeletePacket());
             return true;
         }
-        if (!player.inventory.getItemStack().isEmpty()){
+        if (!player.inventory.getCursorStack().isEmpty()){
             return false;
         }
 
@@ -121,48 +117,60 @@ public class AEISlot extends Control {
             if (getStack() != null && ! getStack().isEmpty()) {
                 ItemStack cheatyStack = getStack().copy();
                 if (button == 0)
-                    cheatyStack.setCount(1);
+                    cheatyStack.setAmount(1);
                 if (button == 1){
-                    cheatyStack.setCount(cheatyStack.getMaxStackSize());
+                    cheatyStack.setAmount(cheatyStack.getMaxAmount());
                 }
-                Minecraft.getMinecraft().getConnection().sendPacket(new CheatPacket(cheatyStack));
+                MinecraftClient.getInstance().getNetworkHandler().sendPacket(new CheatPacket(cheatyStack));
                 return true;
             }
         }
         else {
-            AEIRenderHelper.recipeKeybind();
+            if(button == 0){
+                return AEIRenderHelper.displayRecipesScreen("recipe");
+            } else if (button == 1){
+                return AEIRenderHelper.displayRecipesScreen("use");
+            }else{
+                return AEIRenderHelper.displayRecipesScreen();
+            }
+
+
         }
         return false;
     }
 
 
     private void drawStack(int x, int y) {
-        GuiContainer gui = AEIRenderHelper.getOverlayedGui();
-        AEIRenderHelper.getItemRender().zLevel = 200.0F;
-        AEIRenderHelper.getItemRender().renderItemAndEffectIntoGUI(getStack(),x,y);
-        AEIRenderHelper.getItemRender().renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRenderer, getStack(), x, y - (gui.draggedStack.isEmpty() ? 0 : 8), "");
-        AEIRenderHelper.getItemRender().zLevel = 0.0F;
+        ContainerGui gui = AEIRenderHelper.getOverlayedGui();
+        AEIRenderHelper.getItemRender().zOffset = 200.0F;
+        // TODO - Verify this Works in 1.14 w/ New Method
+        AEIRenderHelper.getItemRender().renderItemAndGlowInGui(getStack(),x,y);
+        assert gui != null;
+        if (((IMixinGuiContainer) gui).getDraggedStack().isEmpty())
+            AEIRenderHelper.getItemRender().renderItemOverlaysInGUIWithText(MinecraftClient.getInstance().fontRenderer, getStack(), x, y - 0, "");
+        else
+            AEIRenderHelper.getItemRender().renderItemOverlaysInGUIWithText(MinecraftClient.getInstance().fontRenderer, getStack(), x, y - 8, "");
+        AEIRenderHelper.getItemRender().zOffset = 0.0F;
     }
 
     public String getMod() {
         if (!getStack().isEmpty()) {
-            ResourceLocation location = Item.REGISTRY.getKey(getStack().getItem());
+            Identifier location = Registry.ITEM.getId(getStack().getItem());
+            assert location != null;
             return location.getNamespace();
         }
         return "";
     }
 
     private List<String> getTooltip() {
-        Minecraft mc = Minecraft.getMinecraft();
-        List unlocalizedTooltip = getStack().getTooltip(mc.player, mc.gameSettings.advancedItemTooltips? ITooltipFlag.TooltipFlags.ADVANCED: ITooltipFlag.TooltipFlags.NORMAL);
-        ArrayList toolTip = Lists.newArrayList();
-        Iterator var4 = unlocalizedTooltip.iterator();
-
-        while(var4.hasNext()) {
-            ITextComponent unlocalizedTip = (ITextComponent)var4.next();
-            toolTip.add(unlocalizedTip.createCopy().getFormattedText());
+        MinecraftClient mc = MinecraftClient.getInstance();
+        ContainerGui gui = AEIRenderHelper.getOverlayedGui();
+        List<String> toolTip = Lists.newArrayList();
+        if(gui!=null){
+            toolTip = gui.getStackTooltip(getStack());
+        }else{
+            toolTip.add(getStack().getDisplayName().getFormattedText());
         }
-
         if (extraTooltip !=null){
             toolTip.add(extraTooltip);
         }

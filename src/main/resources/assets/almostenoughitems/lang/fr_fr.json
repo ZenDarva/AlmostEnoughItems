@@ -4,5 +4,8 @@
   "key.aei.hide":"Masquer/afficher AEI",
   "key.aei.use":"Afficher les utilisations",
   "text.aei.cheat":"Triche",
-  "text.aei.nocheat":"§4§mTriche"
+  "text.aei.nocheat":"§4§mTriche",
+  "text.aei.crafting":"Fabrication",
+  "text.aei.smelting":"Cuisson",
+  "text.aei.fuel":"Fuel"
 }

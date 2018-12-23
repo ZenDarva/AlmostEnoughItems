@@ -5,12 +5,13 @@ import com.gmail.zendarva.aei.gui.widget.Control;
 import com.gmail.zendarva.aei.gui.widget.IFocusable;
 import com.gmail.zendarva.aei.impl.AEIRecipeManager;
 import com.gmail.zendarva.aei.library.KeyBindManager;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemRenderer;
+import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.Window;
 import net.minecraft.item.ItemStack;
 
 import java.awt.*;
@@ -25,7 +26,7 @@ import java.util.Optional;
 public class AEIRenderHelper {
     static Point mouseLoc;
     static public GuiItemList aeiGui;
-    static GuiContainer overlayedGUI;
+    static ContainerGui overlayedGUI;
     static List<TooltipData> tooltipsToRender = new ArrayList<>();
 
     public static void setMouseLoc(int x, int y) {
@@ -38,12 +39,12 @@ public class AEIRenderHelper {
         return mouseLoc;
     }
 
-    public static MainWindow getResolution() {
+    public static Window getResolution() {
 
-        return Minecraft.getMinecraft().mainWindow;
+        return MinecraftClient.getInstance().window;
     }
 
-    public static void drawAEI(GuiContainer overlayedGui) {
+    public static void drawAEI(ContainerGui overlayedGui) {
         overlayedGUI = overlayedGui;
         if (aeiGui == null) {
             aeiGui = new GuiItemList(overlayedGui);
@@ -57,20 +58,20 @@ public class AEIRenderHelper {
             aeiGui.resize();
         }
         if (overlayedGUI instanceof RecipeGui){
-            overlayedGUI.onResize(Minecraft.getMinecraft(), 0,0);
+            overlayedGUI.onScaleChanged(MinecraftClient.getInstance(), 0,0);
         }
     }
 
     public static ItemRenderer getItemRender() {
-        return Minecraft.getMinecraft().getRenderItem();
+        return MinecraftClient.getInstance().getItemRenderer();
     }
 
     public static FontRenderer getFontRenderer() {
-        return Minecraft.getMinecraft().fontRenderer;
+        return MinecraftClient.getInstance().fontRenderer;
     }
 
-    public static GuiContainer getOverlayedGui() {
-        if (overlayedGUI instanceof GuiContainer)
+    public static ContainerGui getOverlayedGui() {
+        if (overlayedGUI instanceof ContainerGui)
             return overlayedGUI;
         return null;
     }
@@ -84,7 +85,7 @@ public class AEIRenderHelper {
         GlStateManager.pushMatrix();
         GlStateManager.enableLighting();
         for (TooltipData tooltipData : tooltipsToRender) {
-            getOverlayedGui().drawHoveringText(tooltipData.text, tooltipData.x, tooltipData.y);
+            getOverlayedGui().drawTooltip(tooltipData.text, tooltipData.x, tooltipData.y);
         }
         GlStateManager.disableLighting();
         tooltipsToRender.clear();
@@ -122,22 +123,25 @@ public class AEIRenderHelper {
 
     public static boolean keyDown(int typedChar, int keyCode, int unknown) {
         boolean handled = false;
-        if (focusedControl != null && focusedControl instanceof Control) {
+        if (focusedControl instanceof Control) {
             Control control = (Control) focusedControl;
             if (control.onKeyDown != null) {
                 handled = control.onKeyDown.accept(typedChar, keyCode, unknown);
             }
-            if (control.charPressed != null)
+            if (control.charPressed != null) {
                 if (typedChar == 256) {
                     ((IFocusable) control).setFocused(false);
                     focusedControl = null;
                 }
-            handled = true;
+                handled = true;
+            }
         }
         if (!handled){
             return KeyBindManager.processGuiKeybinds(typedChar);
+        } else {
+            return true;
         }
-        return handled;
+
     }
 
     public static boolean charInput(long num, int keyCode, int unknown) {
@@ -186,43 +190,45 @@ public class AEIRenderHelper {
         aeiGui.updateView();
     }
     public static void tick(){
-        if (aeiGui !=null && Minecraft.getMinecraft().currentScreen== overlayedGUI)
+        if (aeiGui !=null && MinecraftClient.getInstance().currentGui== overlayedGUI)
             aeiGui.tick();
     }
 
     public static void recipeKeybind(){
-        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer))
-            return;
-        Control control = aeiGui.getLastHovered();
-        if (control != null && control.isHighlighted() && control instanceof AEISlot) {
-            AEISlot slot = (AEISlot) control;
-            AEIRecipeManager.instance().displayRecipesFor(slot.getStack());
-            return;
-        }
-        if (overlayedGUI.hoveredSlot != null){
-            ItemStack stack = overlayedGUI.hoveredSlot.getStack();
-            AEIRecipeManager.instance().displayRecipesFor(stack);
-        }
-
+        displayRecipesScreen("recipe");
     }
     public static void useKeybind(){
-        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer))
-            return;
+        displayRecipesScreen("use");
+    }
+    public static boolean displayRecipesScreen(){
+        return displayRecipesScreen("recipe");
+    }
+    public static boolean displayRecipesScreen(String type){
+        if (!(MinecraftClient.getInstance().currentGui instanceof ContainerGui))
+            return false;
         Control control = aeiGui.getLastHovered();
         if (control != null && control.isHighlighted() && control instanceof AEISlot) {
             AEISlot slot = (AEISlot) control;
-            AEIRecipeManager.instance().displayUsesFor(slot.getStack());
-            return;
+            if(type.equals("use")){
+                return AEIRecipeManager.instance().displayUsesFor(slot.getStack());
+            }else {
+                return AEIRecipeManager.instance().displayRecipesFor(slot.getStack());
+            }
         }
-        if (overlayedGUI.hoveredSlot != null){
-            ItemStack stack = overlayedGUI.hoveredSlot.getStack();
-            AEIRecipeManager.instance().displayUsesFor(stack);
+        if (((IMixinGuiContainer)overlayedGUI).getHoveredSlot() != null) {
+            ItemStack stack = ((IMixinGuiContainer)overlayedGUI).getHoveredSlot().getStack();
+            if(type.equals("use")){
+                return AEIRecipeManager.instance().displayUsesFor(stack);
+            }else {
+                return AEIRecipeManager.instance().displayRecipesFor(stack);
+            }
         }
-
+        return false;
     }
 
+
     public static void hideKeybind(){
-        if (Minecraft.getMinecraft().currentScreen==overlayedGUI && aeiGui!=null){
+        if (MinecraftClient.getInstance().currentGui==overlayedGUI && aeiGui!=null){
             aeiGui.visible=!aeiGui.visible;
         }
     }

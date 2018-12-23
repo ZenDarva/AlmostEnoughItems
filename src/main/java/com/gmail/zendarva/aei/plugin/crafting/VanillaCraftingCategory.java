@@ -3,15 +3,17 @@ package com.gmail.zendarva.aei.plugin.crafting;
 import com.gmail.zendarva.aei.api.IDisplayCategory;
 import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Control;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.Window;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.StringTextComponent;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class VanillaCraftingCategory implements IDisplayCategory<VanillaCraftingRecipe> {
-    MainWindow mainWindow = Minecraft.getMinecraft().mainWindow;
+    Window mainWindow = MinecraftClient.getInstance().window;
     private VanillaCraftingRecipe recipe;
 
     @Override
@@ -21,7 +23,7 @@ public class VanillaCraftingCategory implements IDisplayCategory<VanillaCrafting
 
     @Override
     public String getDisplayName() {
-        return "Crafting";
+        return new StringTextComponent(I18n.translate("text.aei.crafting")).getFormattedText();
     }
 
     @Override
