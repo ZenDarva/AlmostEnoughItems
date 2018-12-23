@@ -5,7 +5,9 @@ import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Control;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class VanillaCraftingCategory implements IDisplayCategory<VanillaCrafting
 
     @Override
     public String getDisplayName() {
-        return "Crafting";
+        return new TextComponentString(I18n.format("text.aei.crafting")).getFormattedText();
     }
 
     @Override

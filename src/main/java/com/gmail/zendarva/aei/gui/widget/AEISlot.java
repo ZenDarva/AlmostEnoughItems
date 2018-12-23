@@ -8,20 +8,14 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
-import net.minecraft.util.text.ITextComponent;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 /**
  * Created by James on 7/28/2018.
  */
@@ -132,7 +126,15 @@ public class AEISlot extends Control {
             }
         }
         else {
-            AEIRenderHelper.recipeKeybind();
+            if(button == 0){
+                return AEIRenderHelper.displayRecipesScreen("recipe");
+            } else if (button == 1){
+                return AEIRenderHelper.displayRecipesScreen("use");
+            }else{
+                return AEIRenderHelper.displayRecipesScreen();
+            }
+
+
         }
         return false;
     }

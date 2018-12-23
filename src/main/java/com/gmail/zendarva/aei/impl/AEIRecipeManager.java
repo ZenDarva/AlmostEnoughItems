@@ -136,19 +136,18 @@ public class AEIRecipeManager implements IRecipeManager {
         RiftLoader.instance.getListeners(IAEIPlugin.class).forEach(IAEIPlugin::register);
     }
 
-    public void displayRecipesFor(ItemStack stack){
-        Map<IDisplayCategory,List<IRecipe>> recipes = AEIRecipeManager.instance().getRecipesFor(stack);
+    public boolean displayRecipeGuiForRecipes(Map<IDisplayCategory,List<IRecipe>> recipes){
         if (recipes.isEmpty())
-            return;
+            return false;
         RecipeGui gui = new RecipeGui(null, Minecraft.getInstance().currentScreen, recipes);
         Minecraft.getInstance().displayGuiScreen(gui);
+        return true;
+    }
+    public boolean displayRecipesFor(ItemStack stack){
+        return displayRecipeGuiForRecipes(AEIRecipeManager.instance().getRecipesFor(stack));
     }
 
-    public void displayUsesFor(ItemStack stack){
-        Map<IDisplayCategory,List<IRecipe>> recipes = AEIRecipeManager.instance().getUsesFor(stack);
-        if (recipes.isEmpty())
-            return;
-        RecipeGui gui = new RecipeGui(null, Minecraft.getInstance().currentScreen, recipes);
-        Minecraft.getInstance().displayGuiScreen(gui);
+    public boolean displayUsesFor(ItemStack stack){
+        return displayRecipeGuiForRecipes(AEIRecipeManager.instance().getUsesFor(stack));
     }
 }

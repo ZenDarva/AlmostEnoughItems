@@ -123,22 +123,25 @@ public class AEIRenderHelper {
 
     public static boolean keyDown(int typedChar, int keyCode, int unknown) {
         boolean handled = false;
-        if (focusedControl != null && focusedControl instanceof Control) {
+        if (focusedControl instanceof Control) {
             Control control = (Control) focusedControl;
             if (control.onKeyDown != null) {
                 handled = control.onKeyDown.accept(typedChar, keyCode, unknown);
             }
-            if (control.charPressed != null)
+            if (control.charPressed != null) {
                 if (typedChar == 256) {
                     ((IFocusable) control).setFocused(false);
                     focusedControl = null;
                 }
-            handled = true;
+                handled = true;
+            }
         }
         if (!handled){
             return KeyBindManager.processGuiKeybinds(typedChar);
+        } else {
+            return true;
         }
-        return handled;
+
     }
 
     public static boolean charInput(long num, int keyCode, int unknown) {
@@ -192,35 +195,37 @@ public class AEIRenderHelper {
     }
 
     public static void recipeKeybind(){
+        displayRecipesScreen("recipe");
+    }
+    public static void useKeybind(){
+        displayRecipesScreen("use");
+    }
+    public static boolean displayRecipesScreen(){
+        return displayRecipesScreen("recipe");
+    }
+    public static boolean displayRecipesScreen(String type){
         if (!(Minecraft.getInstance().currentScreen instanceof GuiContainer))
-            return;
+            return false;
         Control control = aeiGui.getLastHovered();
         if (control != null && control.isHighlighted() && control instanceof AEISlot) {
             AEISlot slot = (AEISlot) control;
-            AEIRecipeManager.instance().displayRecipesFor(slot.getStack());
-            return;
+            if(type.equals("use")){
+                return AEIRecipeManager.instance().displayUsesFor(slot.getStack());
+            }else {
+                return AEIRecipeManager.instance().displayRecipesFor(slot.getStack());
+            }
         }
         if (((IMixinGuiContainer)overlayedGUI).getHoveredSlot() != null) {
             ItemStack stack = ((IMixinGuiContainer)overlayedGUI).getHoveredSlot().getStack();
-            AEIRecipeManager.instance().displayRecipesFor(stack);
+            if(type.equals("use")){
+                return AEIRecipeManager.instance().displayUsesFor(stack);
+            }else {
+                return AEIRecipeManager.instance().displayRecipesFor(stack);
+            }
         }
-
+        return false;
     }
-    public static void useKeybind(){
-        if (!(Minecraft.getInstance().currentScreen instanceof GuiContainer))
-            return;
-        Control control = aeiGui.getLastHovered();
-        if (control != null && control.isHighlighted() && control instanceof AEISlot) {
-            AEISlot slot = (AEISlot) control;
-            AEIRecipeManager.instance().displayUsesFor(slot.getStack());
-            return;
-        }
-        if (((IMixinGuiContainer)overlayedGUI).getHoveredSlot() != null){
-            ItemStack stack = ((IMixinGuiContainer)overlayedGUI).getHoveredSlot().getStack();
-            AEIRecipeManager.instance().displayUsesFor(stack);
-        }
 
-    }
 
     public static void hideKeybind(){
         if (Minecraft.getInstance().currentScreen==overlayedGUI && aeiGui!=null){
