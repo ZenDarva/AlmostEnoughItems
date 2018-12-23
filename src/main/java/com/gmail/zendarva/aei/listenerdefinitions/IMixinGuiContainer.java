@@ -1,6 +1,6 @@
 package com.gmail.zendarva.aei.listenerdefinitions;
 
-import net.minecraft.inventory.Slot;
+import net.minecraft.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public interface IMixinGuiContainer {

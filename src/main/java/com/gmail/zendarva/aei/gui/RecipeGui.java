@@ -5,24 +5,24 @@ import com.gmail.zendarva.aei.api.IRecipe;
 import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Button;
 import com.gmail.zendarva.aei.gui.widget.Control;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.inventory.Container;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.util.Window;
+import net.minecraft.container.Container;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class RecipeGui extends GuiContainer {
-    private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("almostenoughitems","textures/gui/recipecontainer.png");
-    private final MainWindow mainWindow;
+public class RecipeGui extends ContainerGui {
+    private static final Identifier CHEST_GUI_TEXTURE = new Identifier("almostenoughitems","textures/gui/recipecontainer.png");
+    private final Window mainWindow;
     private final Container container;
-    private final GuiScreen prevScreen;
+    private final Gui prevScreen;
     private final Map<IDisplayCategory, List<IRecipe>> recipes;
     private int guiWidth = 176;
     private int guiHeight=222;
@@ -34,15 +34,15 @@ public class RecipeGui extends GuiContainer {
     private int[] itemPointer;
     List<Control> controls = new LinkedList<>();
 
-    public RecipeGui(Container p_i1072_1_, GuiScreen prevScreen, Map<IDisplayCategory, List<IRecipe>> recipes) {
+    public RecipeGui(Container p_i1072_1_, Gui prevScreen, Map<IDisplayCategory, List<IRecipe>> recipes) {
         super(new RecipeContainer());
         this.container = p_i1072_1_;
         this.prevScreen = prevScreen;
         this.recipes = recipes;
-        this.mc = Minecraft.getInstance();
-        this.itemRender=mc.getItemRenderer();
-        this.fontRenderer= mc.fontRenderer;
-        this.mainWindow=Minecraft.getInstance().mainWindow;
+        this.client = MinecraftClient.getInstance();
+        this.itemRenderer=client.getItemRenderer();
+        this.fontRenderer= client.fontRenderer;
+        this.mainWindow=MinecraftClient.getInstance().window;
 
         setupCategories();
     }
@@ -54,16 +54,16 @@ public class RecipeGui extends GuiContainer {
 
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
+    public void draw(int mouseX, int mouseY, float partialTicks) {
+        super.draw(mouseX, mouseY, partialTicks);
         int y = (int) ((mainWindow.getScaledHeight()/2 - this.guiHeight/2));
-        drawCenteredString(this.fontRenderer,categories.get(categoryPointer).getDisplayName(),guiLeft + guiWidth/2,y+9,0x999999);
+        drawStringCentered(this.fontRenderer,categories.get(categoryPointer).getDisplayName(),left + guiWidth/2,y+9,0x999999);
         controls.forEach(Control::draw);
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void update() {
+        super.update();
         slots.forEach(AEISlot::tick);
         controls.forEach(Control::tick);
     }
@@ -71,8 +71,8 @@ public class RecipeGui extends GuiContainer {
 
 
     @Override
-    public void onResize(Minecraft p_onResize_1_, int p_onResize_2_, int p_onResize_3_) {
-        super.onResize(p_onResize_1_, p_onResize_2_, p_onResize_3_);
+    public void onScaleChanged(MinecraftClient p_onResize_1_, int p_onResize_2_, int p_onResize_3_) {
+        super.onScaleChanged(p_onResize_1_, p_onResize_2_, p_onResize_3_);
         updateRecipe();
     }
 
@@ -81,20 +81,20 @@ public class RecipeGui extends GuiContainer {
         categories.get(categoryPointer).setRecipe(recipe);
         slots = categories.get(categoryPointer).setupDisplay();
 
-        guiLeft  = (int) ((mainWindow.getScaledWidth()/2 -this.guiWidth/2));
-        guiTop  = (int) ((mainWindow.getScaledHeight()/2 - this.guiHeight/2));
+        left  = (int) ((mainWindow.getScaledWidth()/2 -this.guiWidth/2));
+        top  = (int) ((mainWindow.getScaledHeight()/2 - this.guiHeight/2));
 
         for (AEISlot slot : slots) {
-            slot.move(guiLeft,guiTop);
+            slot.move(left,top);
         }
 
-        Button btnCatagoryLeft = new Button(guiLeft+10,guiTop+2,15,20,"<");
-        Button btnCatagoryRight = new Button(guiLeft +guiWidth-25,guiTop+2,15,20,">");
+        Button btnCatagoryLeft = new Button(left+10,top+2,15,20,"<");
+        Button btnCatagoryRight = new Button(left +guiWidth-25,top+2,15,20,">");
         btnCatagoryRight.onClick= this::btnCategoryRight;
         btnCatagoryLeft.onClick= this::btnCategoryLeft;
 
-        Button btnRecipeLeft = new Button(guiLeft+10,guiTop+guiHeight-30,15,20,"<");
-        Button btnRecipeRight = new Button(guiLeft +guiWidth-25,guiTop+guiHeight-30,15,20,">");
+        Button btnRecipeLeft = new Button(left+10,top+guiHeight-30,15,20,"<");
+        Button btnRecipeRight = new Button(left +guiWidth-25,top+guiHeight-30,15,20,">");
         btnRecipeRight.onClick= this::btnRecipeRight;
         btnRecipeLeft.onClick= this::btnRecipeLeft;
 
@@ -116,27 +116,27 @@ public class RecipeGui extends GuiContainer {
 
         List<Control> newControls = new LinkedList<>();
         categories.get(categoryPointer).addWidget(newControls);
-        newControls.forEach(f->f.move(guiLeft,guiTop));
+        newControls.forEach(f->f.move(left,top));
         controls.addAll(newControls);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i1) {
-        drawDefaultBackground();
+    protected void drawBackground(float v, int i, int i1) {
+        drawBackground();
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
+        this.client.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
 
         int lvt_4_1_ = (int) ((mainWindow.getScaledWidth()/2 -this.guiWidth/2));
         int lvt_5_1_ = (int) ((mainWindow.getScaledHeight()/2 - this.guiHeight/2));
 
-        this.drawTexturedModalRect(lvt_4_1_, lvt_5_1_, 0, 0, this.guiWidth, this.guiHeight);
+        this.drawTexturedRect(lvt_4_1_, lvt_5_1_, 0, 0, this.guiWidth, this.guiHeight);
         slots.forEach(AEISlot::draw);
     }
 
 
     @Override
-    protected void initGui() {
-        super.initGui();
+    protected void onInitialized() {
+        super.onInitialized();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class RecipeGui extends GuiContainer {
 
 
         if (p_keyPressed_1_ == 259 && prevScreen !=null && AEIRenderHelper.focusedControl ==null){
-            Minecraft.getInstance().displayGuiScreen(prevScreen);
+            MinecraftClient.getInstance().openGui(prevScreen);
             return true;
         }
 
@@ -156,8 +156,8 @@ public class RecipeGui extends GuiContainer {
     }
 
     @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
+    public void onClosed() {
+        super.onClosed();
     }
 
     private boolean btnCategoryLeft(int button){

@@ -1,3 +1,5 @@
+import net.fabricmc.loom.LoomGradlePlugin
+
 group 'com.gmail.zendarva'
 version '0.0.8'
 
@@ -5,19 +7,14 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'https://www.jitpack.io' }
-        maven { url 'https://files.minecraftforge.net/maven' }
-        maven { url 'https://www.dimdev.org/maven/' }
-        maven { url 'http://repo.spongepowered.org/maven' }
+        maven { url 'https://maven.fabricmc.net/' }
     }
     dependencies {
-        classpath 'com.github.Chocohead:ForgeGradle:moderniser-SNAPSHOT'
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath 'net.fabricmc:fabric-loom:0.2.0-SNAPSHOT'
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.tweaker-client'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: LoomGradlePlugin
 apply plugin: 'java'
 apply plugin: 'maven'
 
@@ -28,26 +25,20 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    maven { url 'https://www.jitpack.io' }
-    maven { url 'https://files.minecraftforge.net/maven' }
-    maven { url 'https://www.dimdev.org/maven/' }
-    maven { url 'http://repo.strezz.org/artifactory/list/Strezz-Central' }
+    maven { url 'https://maven.fabricmc.net/' }
 }
 
 dependencies {
-    implementation 'com.github.Chocohead:Rift:jitpack-SNAPSHOT:dev'
+    minecraft "com.mojang:minecraft:18w50a"
+    mappings "net.fabricmc:yarn:18w50a.67"
+    modCompile "net.fabricmc:fabric-loader:0.3.0.74"
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modCompile "net.fabricmc:fabric:0.1.2.63"
 }
 
 minecraft {
-    version = '1.13.2'
-    mappings = 'snapshot_20181130'
-    runDir = 'run'
-    tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderClientTweaker'
-}
-
-mixin {
-    defaultObfuscationEnv notch
-    add sourceSets.main, 'mixins.aei.refmap.json'
+    // N/A
 }
 
 task devJar(type: Jar, dependsOn: classes) {

@@ -2,16 +2,16 @@ package com.gmail.zendarva.aei.listeners;
 
 import com.gmail.zendarva.aei.gui.AEIRenderHelper;
 import com.gmail.zendarva.aei.listenerdefinitions.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import org.dimdev.rift.listener.client.ClientTickable;
+import net.minecraft.client.gui.ContainerGui;
 
 /**
  * Created by James on 7/27/2018.
  */
-public class DrawContainerListener implements DrawContainer, GuiCickListener, GuiKeyDown, CharInput, ClientTickable, MouseScrollListener {
+
+// TODO - Mark as Client Tick in REGISTRY for 1.14 (clientTick)
+public class DrawContainerListener implements DrawContainer, GuiCickListener, GuiKeyDown, CharInput, MouseScrollListener {
     @Override
-    public void draw(int x, int y, float dunno, GuiContainer gui) {
+    public void draw(int x, int y, float dunno, ContainerGui gui) {
         AEIRenderHelper.setMouseLoc(x,y);
         AEIRenderHelper.drawAEI(gui);
     }
@@ -31,8 +31,7 @@ public class DrawContainerListener implements DrawContainer, GuiCickListener, Gu
         return AEIRenderHelper.charInput(p_onCharEvent_1_,p_onCharEvent_3_,p_onCharEvent_4_);
     }
 
-    @Override
-    public void clientTick(final Minecraft minecraft) {
+    public void clientTick() {
         AEIRenderHelper.tick();
     }
 

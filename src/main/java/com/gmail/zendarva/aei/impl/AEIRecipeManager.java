@@ -2,11 +2,10 @@ package com.gmail.zendarva.aei.impl;
 
 import com.gmail.zendarva.aei.api.*;
 import com.gmail.zendarva.aei.gui.RecipeGui;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
-import org.dimdev.riftloader.RiftLoader;
+import net.minecraft.recipe.RecipeManager;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -75,9 +74,9 @@ public class AEIRecipeManager implements IRecipeManager {
             for (IRecipe iRecipe : value) {
                 for (Object o : iRecipe.getOutput()) {
                     if (o instanceof ItemStack) {
-                        if (ItemStack.areItemsEqual(stack, (ItemStack) o)) {
+                        if (ItemStack.areEqual(stack, (ItemStack) o)) {
                             for (IDisplayCategory iDisplayCategory : categories.keySet()) {
-                                if (iDisplayCategory.getId() == iRecipe.getId()) {
+                                if (iDisplayCategory.getId().equals(iRecipe.getId())) {
                                     categories.get(iDisplayCategory).add(iRecipe);
                                 }
                             }
@@ -100,9 +99,9 @@ public class AEIRecipeManager implements IRecipeManager {
                     List<ItemStack> input = (List<ItemStack>) o;
 
                     for (ItemStack itemStack : input) {
-                        if (ItemStack.areItemsEqual(itemStack,stack)){
+                        if (ItemStack.areEqual(itemStack,stack)){
                             for (IDisplayCategory iDisplayCategory : categories.keySet()) {
-                                if (iDisplayCategory.getId() == iRecipe.getId()) {
+                                if (iDisplayCategory.getId().equals(iRecipe.getId())) {
                                     categories.get(iDisplayCategory).add(iRecipe);
                                     found = true;
                                 }
@@ -139,8 +138,8 @@ public class AEIRecipeManager implements IRecipeManager {
     public boolean displayRecipeGuiForRecipes(Map<IDisplayCategory,List<IRecipe>> recipes){
         if (recipes.isEmpty())
             return false;
-        RecipeGui gui = new RecipeGui(null, Minecraft.getInstance().currentScreen, recipes);
-        Minecraft.getInstance().displayGuiScreen(gui);
+        RecipeGui gui = new RecipeGui(null, MinecraftClient.getInstance().currentGui, recipes);
+        MinecraftClient.getInstance().openGui(gui);
         return true;
     }
     public boolean displayRecipesFor(ItemStack stack){

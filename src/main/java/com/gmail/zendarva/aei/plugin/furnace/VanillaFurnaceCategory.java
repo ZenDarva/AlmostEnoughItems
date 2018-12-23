@@ -4,17 +4,15 @@ import com.gmail.zendarva.aei.api.IDisplayCategory;
 import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Control;
 import com.gmail.zendarva.aei.gui.widget.WidgetArrow;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.text.TextComponentString;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VanillaFurnaceCategory implements IDisplayCategory<VanillaFurnaceRecipe> {
+// TODO - STUB 1.14
+public class VanillaFurnaceCategory {/*implements IDisplayCategory<VanillaFurnaceRecipe> {
     private VanillaFurnaceRecipe recipe;
 
     @Override
@@ -74,5 +72,5 @@ public class VanillaFurnaceCategory implements IDisplayCategory<VanillaFurnaceRe
 
     private List<ItemStack> getFuel(){
         return TileEntityFurnace.getBurnTimes().keySet().stream().map(Item::getDefaultInstance).collect(Collectors.toList());
-    }
+    }*/
 }

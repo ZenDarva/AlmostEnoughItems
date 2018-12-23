@@ -2,13 +2,14 @@ package com.gmail.zendarva.aei.plugin.furnace;
 
 import com.gmail.zendarva.aei.api.IRecipe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.Ingredient;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class VanillaFurnaceRecipe implements IRecipe<ItemStack> {
+public class VanillaFurnaceRecipe {//implements IRecipe<ItemStack> {
+    // STUB - 1.14 TODO
+    /*
     private final FurnaceRecipe recipe;
 
     @Override
@@ -38,5 +39,5 @@ public class VanillaFurnaceRecipe implements IRecipe<ItemStack> {
             input.add(ingredients);
         }
         return input;
-    }
+    }*/
 }

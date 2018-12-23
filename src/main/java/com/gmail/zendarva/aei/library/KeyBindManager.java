@@ -2,28 +2,27 @@ package com.gmail.zendarva.aei.library;
 
 import com.gmail.zendarva.aei.listenerdefinitions.IMixinKeyBinding;
 import com.gmail.zendarva.aei.listenerdefinitions.PreLoadOptions;
-import net.minecraft.client.GameSettings;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.settings.GameOptions;
 import net.minecraft.client.settings.KeyBinding;
 import org.apache.commons.lang3.ArrayUtils;
-import org.dimdev.rift.listener.client.KeybindHandler;
 
 import java.util.*;
 
 /**
  * Created by James on 8/7/2018.
  */
-public class KeyBindManager implements PreLoadOptions, KeybindHandler {
+public class KeyBindManager implements PreLoadOptions {
 
     private static boolean optionsLoaded =false;
     private static List<KeyBinding> bindingsToAdd = new ArrayList<>();
     private static Map<KeyBinding, Sink> bindingFunctions = new HashMap<>();
     public static KeyBinding createKeybinding(String bindingName, int key, String categoryName, Sink function){
         KeyBinding newBinding;
-        Minecraft mc = Minecraft.getInstance();
+        MinecraftClient mc = MinecraftClient.getInstance();
         newBinding = new KeyBinding(bindingName, key, categoryName);
         if (optionsLoaded) {
-            mc.gameSettings.keyBindings = ArrayUtils.add(mc.gameSettings.keyBindings, newBinding);
+            mc.options.keysAll = ArrayUtils.add(mc.options.keysAll, newBinding);
         } else {
             bindingsToAdd.add(newBinding);
         }
@@ -38,8 +37,8 @@ public class KeyBindManager implements PreLoadOptions, KeybindHandler {
     }
 
     @Override
-    public void onloadOptions(GameSettings gameSettings) {
-        for (KeyBinding Bindings: bindingsToAdd)gameSettings.keyBindings = ArrayUtils.add(gameSettings.keyBindings, Bindings);
+    public void onloadOptions(GameOptions gameSettings) {
+        for (KeyBinding Bindings: bindingsToAdd)gameSettings.keysAll = ArrayUtils.add(gameSettings.keysAll, Bindings);
         optionsLoaded = true;
     }
 
@@ -49,7 +48,7 @@ public class KeyBindManager implements PreLoadOptions, KeybindHandler {
     }
 
     public static boolean processGuiKeybinds(int typedChar){
-        Optional<KeyBinding> binding= bindingFunctions.keySet().stream().filter(f->f.getDefault().getKeyCode() == typedChar).findFirst();
+        Optional<KeyBinding> binding= bindingFunctions.keySet().stream().filter(f->f.getDefaultKeyCode().getKeyCode() == typedChar).findFirst();
         if (binding.isPresent()){
             bindingFunctions.get(binding.get()).Sink();
             return true;

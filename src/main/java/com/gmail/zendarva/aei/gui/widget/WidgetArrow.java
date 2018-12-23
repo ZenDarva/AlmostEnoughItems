@@ -1,10 +1,10 @@
 package com.gmail.zendarva.aei.gui.widget;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 
 public class WidgetArrow extends Control {
-    private static final ResourceLocation RECIPE_GUI = new ResourceLocation("almostenoughitems","textures/gui/recipecontainer.png");
+    private static final Identifier RECIPE_GUI = new Identifier("almostenoughitems","textures/gui/recipecontainer.png");
     private int progress = 0;
     private int updateTick =0;
 
@@ -14,7 +14,7 @@ public class WidgetArrow extends Control {
 
     @Override
     public void draw() {
-        Minecraft.getInstance().getTextureManager().bindTexture(RECIPE_GUI);
+        MinecraftClient.getInstance().getTextureManager().bindTexture(RECIPE_GUI);
         this.drawTexturedModalRect(rect.x,rect.y,18,222,22,18);
         int width = (int)((progress/10f) * 22);
         this.drawTexturedModalRect(rect.x-1,rect.y-1,40,222,width,18);

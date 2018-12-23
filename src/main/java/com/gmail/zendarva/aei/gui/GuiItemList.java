@@ -7,17 +7,17 @@ import com.gmail.zendarva.aei.gui.widget.Button;
 import com.gmail.zendarva.aei.gui.widget.Control;
 import com.gmail.zendarva.aei.gui.widget.TextBox;
 import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.Window;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.IRegistry;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class GuiItemList extends Drawable {
 
     public static final int FOOTERSIZE = 70;
-    private GuiContainer overlayedGui;
+    private ContainerGui overlayedGui;
     private static int page=0;
     private ArrayList<AEISlot> displaySlots;
     protected ArrayList<Control> controls;
@@ -40,7 +40,7 @@ public class GuiItemList extends Drawable {
     private int oldGuiLeft = 0;
     private boolean cheatMode = false;
 
-    public GuiItemList(GuiContainer overlayedGui) {
+    public GuiItemList(ContainerGui overlayedGui) {
         super(calculateRect(overlayedGui));
         displaySlots = new ArrayList<>();
         controls = new ArrayList<>();
@@ -51,10 +51,10 @@ public class GuiItemList extends Drawable {
     }
 
     public boolean canCheat(){
-        EntityPlayer player = Minecraft.getInstance().player;
+        PlayerEntity player = MinecraftClient.getInstance().player;
         if (cheatMode)
         {
-            if (!player.hasPermissionLevel(1)) {
+            if (!player.allowsPermissionLevel(1)) {
                 cheatClicked(0);
                 return false;
             }
@@ -63,19 +63,19 @@ public class GuiItemList extends Drawable {
         return false;
     }
 
-    private static Rectangle calculateRect(GuiContainer overlayedGui) {
-        MainWindow res = AEIRenderHelper.getResolution();
+    private static Rectangle calculateRect(ContainerGui overlayedGui) {
+        Window res = AEIRenderHelper.getResolution();
         int startX = (((IMixinGuiContainer)overlayedGui).getGuiLeft() + ((IMixinGuiContainer)overlayedGui).getXSize()) + 10;
         int width = res.getScaledWidth() - startX;
         return new Rectangle(startX, 0, width, res.getScaledHeight());
     }
 
     protected void resize() {
-        MainWindow res = AEIRenderHelper.getResolution();
+        Window res = AEIRenderHelper.getResolution();
 
-        if (overlayedGui!= Minecraft.getInstance().currentScreen){
-            if (Minecraft.getInstance().currentScreen instanceof GuiContainer){
-                overlayedGui= (GuiContainer) Minecraft.getInstance().currentScreen;
+        if (overlayedGui!= MinecraftClient.getInstance().currentGui){
+            if (MinecraftClient.getInstance().currentGui instanceof ContainerGui){
+                overlayedGui= (ContainerGui) MinecraftClient.getInstance().currentGui;
 
             }
             else{
@@ -125,7 +125,7 @@ public class GuiItemList extends Drawable {
     private void calculateSlots() {
         int x = rect.x;
         int y = rect.y;
-        MainWindow res = AEIRenderHelper.getResolution();
+        Window res = AEIRenderHelper.getResolution();
         displaySlots.clear();
         int xOffset = 4;
         int yOffset = 4;
@@ -198,11 +198,9 @@ public class GuiItemList extends Drawable {
 
     private String getCheatModeText(){
         if (cheatMode){
-            TextComponentTranslation cheat = new TextComponentTranslation("text.aei.cheat",new Object[]{null});
-            return cheat.getFormattedText();
+            return new StringTextComponent(I18n.translate("text.aei.cheat")).getFormattedText();
         }
-        TextComponentTranslation noCheat = new TextComponentTranslation("text.aei.nocheat",new Object[]{null});
-        return noCheat.getFormattedText();
+        return new StringTextComponent(I18n.translate("text.aei.nocheat")).getFormattedText();
     }
 
     protected void updateView(){
@@ -232,7 +230,7 @@ public class GuiItemList extends Drawable {
         }
         else {
            for (ItemStack stack : ClientListener.stackList) {
-                if (stack.getItem().getName().getString().toLowerCase().contains(searchText))
+                if (stack.getItem().getTextComponent().getString().toLowerCase().contains(searchText))
                     if (modText!= null){
                         if (getMod(stack).contains(modText)){
                             view.add(stack);
@@ -257,7 +255,7 @@ public class GuiItemList extends Drawable {
 
     private String getMod(ItemStack stack) {
         if (stack != null && !stack.isEmpty()) {
-            ResourceLocation location = IRegistry.ITEM.getKey(stack.getItem());
+            Identifier location = Registry.ITEM.getId(stack.getItem());
             return location.getNamespace();
         }
         return "";

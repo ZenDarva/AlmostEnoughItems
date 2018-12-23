@@ -6,12 +6,12 @@ import com.gmail.zendarva.aei.gui.widget.IFocusable;
 import com.gmail.zendarva.aei.impl.AEIRecipeManager;
 import com.gmail.zendarva.aei.library.KeyBindManager;
 import com.gmail.zendarva.aei.listenerdefinitions.IMixinGuiContainer;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemRenderer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.Window;
 import net.minecraft.item.ItemStack;
 
 import java.awt.*;
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class AEIRenderHelper {
     static Point mouseLoc;
     static public GuiItemList aeiGui;
-    static GuiContainer overlayedGUI;
+    static ContainerGui overlayedGUI;
     static List<TooltipData> tooltipsToRender = new ArrayList<>();
 
     public static void setMouseLoc(int x, int y) {
@@ -39,12 +39,12 @@ public class AEIRenderHelper {
         return mouseLoc;
     }
 
-    public static MainWindow getResolution() {
+    public static Window getResolution() {
 
-        return Minecraft.getInstance().mainWindow;
+        return MinecraftClient.getInstance().window;
     }
 
-    public static void drawAEI(GuiContainer overlayedGui) {
+    public static void drawAEI(ContainerGui overlayedGui) {
         overlayedGUI = overlayedGui;
         if (aeiGui == null) {
             aeiGui = new GuiItemList(overlayedGui);
@@ -58,20 +58,20 @@ public class AEIRenderHelper {
             aeiGui.resize();
         }
         if (overlayedGUI instanceof RecipeGui){
-            overlayedGUI.onResize(Minecraft.getInstance(), 0,0);
+            overlayedGUI.onScaleChanged(MinecraftClient.getInstance(), 0,0);
         }
     }
 
     public static ItemRenderer getItemRender() {
-        return Minecraft.getInstance().getItemRenderer();
+        return MinecraftClient.getInstance().getItemRenderer();
     }
 
     public static FontRenderer getFontRenderer() {
-        return Minecraft.getInstance().fontRenderer;
+        return MinecraftClient.getInstance().fontRenderer;
     }
 
-    public static GuiContainer getOverlayedGui() {
-        if (overlayedGUI instanceof GuiContainer)
+    public static ContainerGui getOverlayedGui() {
+        if (overlayedGUI instanceof ContainerGui)
             return overlayedGUI;
         return null;
     }
@@ -85,7 +85,7 @@ public class AEIRenderHelper {
         GlStateManager.pushMatrix();
         GlStateManager.enableLighting();
         for (TooltipData tooltipData : tooltipsToRender) {
-            getOverlayedGui().drawHoveringText(tooltipData.text, tooltipData.x, tooltipData.y);
+            getOverlayedGui().drawTooltip(tooltipData.text, tooltipData.x, tooltipData.y);
         }
         GlStateManager.disableLighting();
         tooltipsToRender.clear();
@@ -190,7 +190,7 @@ public class AEIRenderHelper {
         aeiGui.updateView();
     }
     public static void tick(){
-        if (aeiGui !=null && Minecraft.getInstance().currentScreen== overlayedGUI)
+        if (aeiGui !=null && MinecraftClient.getInstance().currentGui== overlayedGUI)
             aeiGui.tick();
     }
 
@@ -204,7 +204,7 @@ public class AEIRenderHelper {
         return displayRecipesScreen("recipe");
     }
     public static boolean displayRecipesScreen(String type){
-        if (!(Minecraft.getInstance().currentScreen instanceof GuiContainer))
+        if (!(MinecraftClient.getInstance().currentGui instanceof ContainerGui))
             return false;
         Control control = aeiGui.getLastHovered();
         if (control != null && control.isHighlighted() && control instanceof AEISlot) {
@@ -228,7 +228,7 @@ public class AEIRenderHelper {
 
 
     public static void hideKeybind(){
-        if (Minecraft.getInstance().currentScreen==overlayedGUI && aeiGui!=null){
+        if (MinecraftClient.getInstance().currentGui==overlayedGUI && aeiGui!=null){
             aeiGui.visible=!aeiGui.visible;
         }
     }
