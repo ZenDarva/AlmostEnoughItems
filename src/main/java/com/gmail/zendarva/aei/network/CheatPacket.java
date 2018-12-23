@@ -25,13 +25,13 @@ public class CheatPacket implements Packet<INetHandlerPlayServer> {
 
     @Override
     public void readPacketData(PacketBuffer packetBuffer) throws IOException {
-        stack = ItemStack.loadFromNBT(packetBuffer.readCompoundTag());
+        stack = ItemStack.read(packetBuffer.readCompoundTag());
     }
 
     @Override
     public void writePacketData(PacketBuffer packetBuffer) throws IOException {
         NBTTagCompound tag = new NBTTagCompound();
-        stack.writeToNBT(tag);
+        stack.write(tag);
         packetBuffer.writeCompoundTag(tag);
     }
 

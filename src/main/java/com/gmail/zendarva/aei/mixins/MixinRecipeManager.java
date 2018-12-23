@@ -4,6 +4,7 @@ import com.gmail.zendarva.aei.listenerdefinitions.RecipeLoadListener;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.util.RecipeBookClient;
 import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.network.play.server.SPacketUpdateRecipes;
 import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,8 +18,8 @@ public class MixinRecipeManager {
     @Shadow
     RecipeManager recipeManager;
 
-    @Inject(method = "func_199525_a", at = @At("RETURN"))
-    private void onBootstrapRegister(CallbackInfo ci) {
+    @Inject(method = "handleUpdateRecipes", at = @At("RETURN"))
+    private void onUpdateRecipies(SPacketUpdateRecipes packetIn, CallbackInfo ci) {
         for (RecipeLoadListener listener : RiftLoader.instance.getListeners(RecipeLoadListener.class)) {
             listener.recipesLoaded(recipeManager);
         }

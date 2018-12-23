@@ -36,7 +36,9 @@ public abstract class Control extends Drawable {
     }
 
     public void move(int x, int y){
-        rect.move(x+rect.x,rect.y+y);//Why the fuck?
+        rect.x+=x;
+        rect.y+=y;
+        //rect.move(x+rect.x,rect.y+y);//Why the fuck?
     }
 
     protected static void drawRect(int p_drawRect_0_, int p_drawRect_1_, int p_drawRect_2_, int p_drawRect_3_, int p_drawRect_4_) {
@@ -59,11 +61,11 @@ public abstract class Control extends Drawable {
         float lvt_8_1_ = (float) (p_drawRect_4_ & 255) / 255.0F;
         Tessellator lvt_9_1_ = Tessellator.getInstance();
         BufferBuilder lvt_10_1_ = lvt_9_1_.getBuffer();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_1);
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color4f(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_1);
         lvt_10_1_.begin(7, DefaultVertexFormats.POSITION);
         lvt_10_1_.pos((double) p_drawRect_0_, (double) p_drawRect_3_, 0.0D).endVertex();
         lvt_10_1_.pos((double) p_drawRect_2_, (double) p_drawRect_3_, 0.0D).endVertex();
@@ -72,7 +74,7 @@ public abstract class Control extends Drawable {
         lvt_9_1_.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
     }
 
     protected void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {

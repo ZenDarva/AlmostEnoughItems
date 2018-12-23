@@ -4,5 +4,9 @@
   "key.aei.hide":"Hide/Show AEI",
   "key.aei.use":"Show Uses",
   "text.aei.cheat":"Cheat",
-  "text.aei.nocheat":"§4§mCheat"
+  "text.aei.nocheat":"§4§mCheat",
+  "text.aei.crafting":"Crafting",
+  "text.aei.smelting":"Smelting",
+  "text.aei.fuel":"Fuel"
+
 }

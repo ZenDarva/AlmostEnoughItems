@@ -13,6 +13,7 @@
     "MixinMinecraftResize",
     "MixinKeyboardListener",
     "SettingsMixin",
-    "MixinRecipeManager"
+    "MixinRecipeManager",
+    "MixinKeyBinding"
   ]
 }

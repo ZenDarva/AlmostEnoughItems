@@ -4,9 +4,11 @@ import com.gmail.zendarva.aei.api.IDisplayCategory;
 import com.gmail.zendarva.aei.gui.widget.AEISlot;
 import com.gmail.zendarva.aei.gui.widget.Control;
 import com.gmail.zendarva.aei.gui.widget.WidgetArrow;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +24,7 @@ public class VanillaFurnaceCategory implements IDisplayCategory<VanillaFurnaceRe
 
     @Override
     public String getDisplayName() {
-        return "Smelting";
+        return new TextComponentString(I18n.format("text.aei.smelting")).getFormattedText();
     }
 
     @Override
@@ -45,7 +47,8 @@ public class VanillaFurnaceCategory implements IDisplayCategory<VanillaFurnaceRe
         AEISlot fuelSlot = new AEISlot(85, 130);
         fuelSlot.setStackList(getFuel());
         fuelSlot.setDrawBackground(true);
-        fuelSlot.setExtraTooltip("Fuel");
+        //fuelSlot.setExtraTooltip("Fuel");
+        fuelSlot.setExtraTooltip(I18n.format("text.aei.fuel"));
 
         slots.add(inputSlot);
         slots.add(outputSlot);

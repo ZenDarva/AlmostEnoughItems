@@ -14,7 +14,7 @@ public class WidgetArrow extends Control {
 
     @Override
     public void draw() {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(RECIPE_GUI);
+        Minecraft.getInstance().getTextureManager().bindTexture(RECIPE_GUI);
         this.drawTexturedModalRect(rect.x,rect.y,18,222,22,18);
         int width = (int)((progress/10f) * 22);
         this.drawTexturedModalRect(rect.x-1,rect.y-1,40,222,width,18);

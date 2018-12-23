@@ -72,6 +72,6 @@ public class TextBox extends Control implements IFocusable {
 
     @Override
     public void tick() {
-        textField.updateCursorCounter();
+        textField.tick();
     }
 }
